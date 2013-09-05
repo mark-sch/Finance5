@@ -198,3 +198,11 @@ $('form').submit(function(){
   if (window.focused_element)
     document.forms[0].cursor_fokus.value = window.focused_element.name;
 });
+
+function fillUserPassInput(user, pass, mandant) {
+  $('#auth_login').val(user);
+  $('#_AUTH_password').val(pass);
+  $("#_AUTH_client_id option:contains("+mandant+")").attr('selected', 'selected');
+  //$("#_AUTH_client_id option[value='Demo GmbH']").attr('selected',true);
+  focus_by_name('action');
+} 
