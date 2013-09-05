@@ -1,0 +1,45 @@
+[%- USE T8 %]
+[%- USE HTML %]
+[%- USE L %]
+[%- USE LxERP %]
+[%- BLOCK cvar_name %][% HTML.escape(cvar.name_prefix) _ "cvar_" _ HTML.escape(cvar.var.name) _ HTML.escape(cvar.name_postfix) -%][% END %]
+[%- BLOCK cvar_inputs %]
+[% render_input_blocks__cvar_name = PROCESS cvar_name %]
+[%- %]
+[%- IF cvar.hide_non_editable && !cvar.var.flag_editable %]
+<input type="hidden" name="[% PROCESS cvar_name %]" value="[% HTML.escape(cvar.var.value) %]">
+[%- ELSIF !cvar.valid %]
+  [%- IF show_disabled_message %]
+<i>[% 'Element disabled' | $T8 %]</i>
+  [%- END %]
+[%- ELSIF cvar.var.type == 'bool' %]
+<input type="checkbox" name="[% PROCESS cvar_name %]" value="1"[% IF cvar.value %] checked[% END %]>
+[%- ELSIF cvar.var.type == 'textfield' %]
+[% L.textarea_tag(render_input_blocks__cvar_name, cvar.value, cols=cvar.var.width, rows=cvar.var.height) %]
+[%- ELSIF cvar.var.type == 'date' %]
+[%- L.date_tag(render_input_blocks__cvar_name, cvar.value) %]
+
+[%- ELSIF cvar.var.type == 'timestamp' %]
+<input name="[% PROCESS cvar_name %]" value="[% HTML.escape(cvar.value) %]">
+[%- ELSIF cvar.var.type == 'select' %]
+<select name="[% PROCESS cvar_name %]">
+ [%- FOREACH option = cvar.var.OPTIONS %]
+ <option[% IF option.value == cvar.value %] selected[% END %]>[% HTML.escape(option.value) %]</option>
+ [%- END %]
+</select>
+[%- ELSIF cvar.var.type == 'customer' %]
+[%- L.customer_picker(render_input_blocks__cvar_name, cvar.value) %]
+
+[%- ELSIF cvar.var.type == 'vendor' %]
+[% L.vendor_selector(render_input_blocks__cvar_name, cvar.value) %]
+
+[%- ELSIF cvar.var.type == 'part' %]
+[% L.part_selector(render_input_blocks__cvar_name, cvar.value) %]
+
+[%- ELSIF cvar.var.type == 'number' %]
+[%- L.input_tag(render_input_blocks__cvar_name, LxERP.format_amount(cvar.value, -2)) %]
+
+[%- ELSE %]
+<input name="[% PROCESS cvar_name %]" value="[% HTML.escape(cvar.value) %]" [%- IF cvar.var.maxlength %] maxlength="[% HTML.escape(cvar.var.maxlength) %]"[% END -%]>
+[%- END %]
+[%- END %]

@@ -1,0 +1,43 @@
+[%- USE T8 %]
+[%- USE HTML %][%- USE LxERP %]
+   <noscript>
+   [% INCLUDE 'generic/information.html'
+     title_information = LxERP.t8('Your browser does not currently support Javascript.'),
+     label_information = LxERP.t8('A lot of the usability of kivitendo has been enhanced with javascript. Although it is currently possible to use every aspect of kivitendo without javascript, we strongly recommend it. In a future version this may change and javascript may be necessary to access advanced features.'),
+   %]
+   </noscript>
+ <center>
+  <a class="nomobile" href="http://www.facebook.com/myFinance5" target="_top"><img src="f5-images/finance5.png" border="0" title="[% 'Finance5 Homepage' | $T8 %]"></a>
+
+  <h3 class="login">[% 'Finance5' | $T8 %] - Kaufm&auml;nnische Softwarel&ouml;sungen</h3>
+  <h5>based on sql-ledger / kivitendo</h5>
+
+[%- IF git_head %]
+  <p>Version: 2013.3.77<br/>[%- LxERP.t8("Git revision: #1", git_head.hash.substr(0, 7)) %]</p>
+[%- END %]
+
+   <br>
+
+   <table border="0">
+    <tr>
+     <th align="left"><a href="am.pl?action=config" title="[% 'Preferences' | $T8 %]">[% 'User' | $T8 %]</a></th>
+     <td>[% HTML.escape(myconfig_name) %]</td>
+    </tr>
+    <tr>
+     <th align="left">[% IF AUTH_RIGHTS_ADMIN %]<a href="controller.pl?action=ClientConfig/edit" title="[% 'Client Configuration' | $T8 %]">[% END %][% 'Client' | $T8 %][% IF AUTH_RIGHTS_ADMIN %]</a>[% END %]</th>
+     <td>[% HTML.escape(client.name) %]</td>
+    </tr>
+    <tr>
+     <th align="left"><a href="am.pl?action=config" title="[% 'Preferences' | $T8 %]">[% 'Language' | $T8 %]</a></th>
+     <td>[% HTML.escape(myconfig_countrycode) %]</td>
+    </tr>
+    <tr>
+     <th align="left">[% 'Webserver interface' | $T8 %]</th>
+     <td>[% HTML.escape(interface) %]</td>
+    </tr>
+   </table>
+ </center>
+
+ [%- todo_list %]
+
+<br/><br/>

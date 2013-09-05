@@ -1,0 +1,228 @@
+[%- USE T8 %]
+[%- USE HTML %]
+[%- USE LxERP %]
+[%- USE L %]
+[%- SET follow_up_trans_info = invnumber _ ' (' _ vendor_name _ ')' %]
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/vendor_selection.js"></script>
+<script type="text/javascript" src="js/calculate_qty.js"></script>
+<script type="text/javascript" src="js/follow_up.js"></script>
+<script type="text/javascript" src="js/customer_or_vendor_selection.js"></script>
+
+<form method="post" name="invoice" action="[% script %]">
+
+<p>[% saved_message %]</p>
+
+[%- FOREACH key = HIDDENS %]
+<input type="hidden" name="[% HTML.escape(key) %]" value="[% HTML.escape($key)  %]">
+[%- END %]
+<input type="hidden" name="follow_up_trans_id_1" value="[% id %]">
+<input type="hidden" name="follow_up_trans_type_1" value="sales_invoice">
+<input type="hidden" name="follow_up_trans_info_1" value="[% HTML.escape(follow_up_trans_info) %]">
+<input type="hidden" name="follow_up_rowcount" value="1">
+
+<p><div class="listtop" width="100%">[% title %]</div></p>
+
+[%- INCLUDE 'common/flash.html' %]
+
+<div class="tabwidget">
+ <ul>
+  <li><a href="#ui-tabs-basic-data">[% 'Basic Data' | $T8 %]</a></li>
+[%- IF INSTANCE_CONF.get_webdav %]
+  <li><a href="#ui-tabs-webdav">[% 'WebDAV' | $T8 %]</a></li>
+[%- END %]
+[%- IF id %]
+  <li><a href="controller.pl?action=RecordLinks/ajax_list&object_model=PurchaseInvoice&object_id=[% HTML.url(id) %]">[% 'Linked Records' | $T8 %]</a></li>
+[%- END %]
+ </ul>
+
+ <div id="ui-tabs-basic-data">
+<table width="100%">
+  <tr>
+    <td valign="top">
+      <table>
+        <tr>
+          <th align="right">[% 'Vendor' | $T8 %]</th>
+          <td>
+            [%- INCLUDE 'generic/multibox.html'
+                 id            = 'vendor',
+                 name          = 'vendor',
+                 style         = 'width: 250px',
+                 class         = 'initial_focus',
+                 DATA          = ALL_VENDORS,
+                 id_sub        = 'vc_keys',
+                 label_key     = 'name',
+                 select        = vc_select,
+                 limit         = vclimit,
+                 allow_textbox = 1,
+                 onChange      = "document.getElementById('update_button').click();" -%]
+            <input type="button" value="[% 'Details (one letter abbreviation)' | $T8 %]" onclick="show_vc_details('[% vc | html %]')">
+          </td>
+          <input type="hidden" name="vendor_klass" value="[% HTML.escape(vendor_klass) %]">
+          <input type="hidden" name="vendor_id" value="[% HTML.escape(vendor_id) %]">
+          <input type="hidden" name="oldvendor" value="[% HTML.escape(oldvendor) %]">
+          <input type="hidden" name="selectvendor" value="[% HTML.escape(selectvendor) %]">
+        </tr>
+[%- IF ALL_CONTACTS.size %]
+        <tr>
+          <th align="right">[% 'Contact Person' | $T8 %]</th>
+          <td>
+            [% L.select_tag('cp_id', ALL_CONTACTS, default = cp_id, value_key = 'cp_id', title_key = 'full_name_dep', with_empty = 1, style = 'width: 250px') %]
+          </td>
+        </tr>
+[%- END %]
+        <tr>
+          <td align="right">[% 'Credit Limit' | $T8 %]</td>
+          <td>
+            [% LxERP.format_amount(creditlimit, 0, '0') %]; [% 'Remaining' | $T8 %]
+            <span class="plus[% IF is_credit_remaining_negativ %]0[% ELSE %]1[% END %]">[% LxERP.format_amount(creditremaining,0 ,'0') %]</span>
+          </td>
+        </tr>
+        <tr>
+          <th align="right" nowrap>[% 'Record in' | $T8 %]</th>
+          <td colspan="3"><select name="AP" style="width:250px;">[% selectAP %]</select></td>
+          <input type="hidden" name="selectAP" value="[% selectAP %]">
+        </tr>
+        <tr>
+          <th align="right">[% 'Steuersatz' | $T8 %]</th>
+          <td>
+            [%- INCLUDE 'generic/multibox.html'
+                 name       = 'taxzone_id'
+                 style      = 'width: 250px'
+                 DATA       = ALL_TAXZONES
+                 id_key     = 'id'
+                 readonly   = (id ? 1 : 0)
+                 label_key  = 'description' -%]
+          </td>
+  [%- IF id %]
+          <input type='hidden' name='taxzone_id' value='[% taxzone_id %]'>
+  [%- END %]
+        </tr>
+[%- IF all_departments %]
+        <tr>
+          <th align="right" nowrap>[% 'Department' | $T8 %]</th>
+          <td colspan="3">
+            [%- INCLUDE 'generic/multibox.html'
+                 name       = 'department_id',
+                 style      = 'width: 250px',
+                 DATA       = all_departments,
+                 id_key     = 'id',
+                 label_sub  = 'department_labels',
+                 show_empty = 1 -%]
+          </td>
+        </tr>
+[%- END %]
+[%- IF currencies %]
+        <tr>
+          <th align="right">[% 'Currency' | $T8 %]</th>
+          <td>[% currencies %]</td>
+        </tr>
+[%- END %]
+        <input type="hidden" name="fxgain_accno" value="[% fxgain_accno %]">
+        <input type="hidden" name="fxloss_accno" value="[% fxloss_accno %]">
+[%- IF show_exchangerate %]
+        <tr>
+          <th align="right">[% 'Exchangerate' | $T8 %]</th>
+          <td>
+           [%- IF forex %]
+            [% LxERP.format_amount(exchangerate, 2) %]
+           [%- ELSE %]
+            <input name="exchangerate" size="10" value="[% HTML.escape(LxERP.format_amount(exchangerate)) %]">
+           [%- END %]
+          </td>
+        </tr>
+[%- END %]
+      </table>
+    </td>
+    <td align="right" valign="top">
+      <table>
+        <tr>
+          <th align="right">[% 'Employee' | $T8 %]</th>
+          <td>[% L.select_tag('employee_id', ALL_EMPLOYEES, default = employee_id, title_key = 'safe_name') %]</td>
+        </tr>
+
+[%- IF is_type_credit_note %]
+        <tr>
+          <th align="right" nowrap>[% 'Credit Note Number' | $T8 %]</th>
+          <td colspan="3"><input size='11' name="invnumber" value="[% HTML.escape(invnumber) %]"></td>
+        </tr>
+        <tr>
+          <th align="right">[% 'Credit Note Date' | $T8 %]</th>
+          <td>[% L.date_tag('invdate', invdate, onChange='set_duedate(this)') %]</td>
+        </tr>
+[%- ELSE %]
+        <tr>
+          <th align="right" nowrap>[% 'Invoice Number' | $T8 %]</th>
+          <td colspan="3"><input size='11' name="invnumber" value="[% HTML.escape(invnumber) %]"></td>
+        </tr>
+        <tr>
+          <th align="right">[% 'Invoice Date' | $T8 %]</th>
+          <td>[% L.date_tag('invdate', invdate, onChange='set_duedate(this)') %]</td>
+        </tr>
+        <tr>
+          <th align="right">[% 'Due Date' | $T8 %]</th>
+          <td>[% L.date_tag('duedate', duedate) %]</td>
+        </tr>
+[%- END %]
+
+        <tr>
+          <th align="right" nowrap>[% 'Order Number' | $T8 %]</th>
+          <td colspan="3"><input size='11' name="ordnumber" value="[% HTML.escape(ordnumber) %]"></td>
+        </tr>
+        <tr>
+          <th align="right" nowrap>[% 'Order Date' | $T8 %]</th>
+          <td>[% L.date_tag('orddate', orddate) %]</td>
+        </tr>
+        <tr>
+          <th align="right" nowrap>[% 'Quotation Date' | $T8 %]</th>
+          <td>[% L.date_tag('quodate', quodate) %]</td>
+        </tr>
+        <tr>
+          <th align="right" nowrap>[% 'Project Number' | $T8 %]</th>
+          <td>
+            [%- INCLUDE 'generic/multibox.html'
+                 name       = 'globalproject_id',
+                 DATA       = ALL_PROJECTS,
+                 id_key     = 'id',
+                 label_key  = 'projectnumber',
+                 show_empty = 1,
+                 onChange   = "document.getElementById('update_button').click();" -%]
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    </td>
+  </tr>
+  <script type="text/javascript" src="js/show_form_details.js"></script>
+  <script type="text/javascript" src="js/show_vc_details.js"></script>
+  <script type="text/javascript" src="js/show_history.js"></script>
+  <script type="text/javascript">
+   <!--
+     $('document').ready(function(){
+[% IF creditwarning != '' %]
+       alert('[% 'Credit Limit exceeded!!!' | $T8 %]');
+[% ELSE %]
+[% END %]
+     });
+     function set_duedate() {
+       $.ajax({
+         url: 'ir.pl?action=get_duedate_vendor',
+         data: {
+           invdate:     $('#invdate').val(),
+           vendor_id:   $('input[name="vendor_id"]').val(),
+           old_duedate: $('#duedate').val(),
+         },
+         dataType: 'text',
+         success: function (data) { $('#duedate').val(data); }
+       })
+     }
+   //-->
+  </script>
+
+  <input type="hidden" name="webdav" value="[% webdav %]">

@@ -1,0 +1,16 @@
+tags
+crm
+/users/datev-export*
+/users/templates-cache/
+/users/session_files/
+/users/pid/
+/users/.cache/
+/users/kivitendo-print*
+users/.openoffice.org2/
+/config/lx_office.conf
+/config/kivitendo.conf
+/doc/online/*/*.html
+pod2html*
+/doc/build/dobudish*
+/spool/*
+/webdav/*

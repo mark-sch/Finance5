@@ -1,0 +1,112 @@
+[%- USE T8 %]
+[% USE HTML %][% USE LxERP %]
+[% IF vc == 'vendor' %]
+ [% SET is_vendor = 1 %]
+ [% SET arap = 'ap' %]
+ [% SET iris = 'ir' %]
+[% ELSE %]
+ [% SET is_vendor = 0 %]
+ [% SET arap = 'ar' %]
+ [% SET iris = 'is' %]
+[%- END %]
+
+ <p><div class="listtop">[% title %]</div></p>
+
+ <form action="sepa.pl" method="post">
+  <p>
+   [%- IF is_vendor %]
+    [% 'Please select the source bank account for the transfers:' | $T8 %]
+   [%- ELSE %]
+    [% 'Please select the destination bank account for the collections:' | $T8 %]
+   [%- END %]
+   <br>
+   [%- INCLUDE generic/multibox.html
+         name      = 'bank_account.id',
+         DATA      = BANK_ACCOUNTS,
+         id_key    = 'id',
+         label_sub = 'bank_account_label',
+   -%]
+  </p>
+
+  <p>
+   <table border="0">
+    <tr>
+     <th class="listheading" align="center"><input type="checkbox" id="select_all"></th>
+     <th class="listheading">[% IF is_vendor %][% 'Vendor' | $T8 %][%- ELSE %][%- LxERP.t8('Customer') %][%- END %]</th>
+     <th class="listheading">[% 'Invoice' | $T8 %]</th>
+     <th class="listheading" align="right">[% 'Amount' | $T8 %]</th>
+     <th class="listheading" align="right">[% 'Open amount' | $T8 %]</th>
+     <th class="listheading" align="right">[% 'Due Date' | $T8 %]</th>
+     <th class="listheading">[% 'Purpose' | $T8 %]</th>
+     <th class="listheading" align="right">[% 'Bank transfer amount' | $T8 %]</th>
+    </tr>
+
+    [%- FOREACH invoice = INVOICES %]
+     <input type="hidden" name="bank_transfers[+].[% arap %]_id" value="[% HTML.escape(invoice.id) %]">
+
+     <tr class="listrow[% loop.count % 2 %]">
+      <td align="center">
+       [%- IF invoice.vc_bank_info_ok %]
+        <input type="checkbox" name="bank_transfers[].selected" value="1"[% IF invoice.checked %] checked[% END %]>
+       [%- END %]
+      </td>
+      <td>
+       [%- IF loop.first || (previous_vcname != invoice.vcname) %]
+        <a href="controller.pl?action=CustomerVendor/edit&db=[% vc %]&id=[% HTML.url(invoice.vc_id) %]&callback=[% HTML.url('sepa.pl?action=bank_transfer_add&vc=' _ vc) %]">
+         [%- GET HTML.escape(invoice.vcname);
+             SET previous_vcname = invoice.vcname;
+             IF !invoice.vc_bank_info_ok;
+               GET ' <sup>(1)</sup>';
+               SET show_vc_bank_info_footnote = '1';
+             END; -%]
+        </a>
+       [%- END -%]
+      </td>
+
+      <td>
+       <a href="[% IF invoice.invoice %][% iris %][% ELSE %][% arap %][% END %].pl?action=edit&id=[% HTML.escape(invoice.id) %]">
+        [% HTML.escape(invoice.invnumber) %]
+       </a>
+      </td>
+
+      <td align="right">[% LxERP.format_amount(invoice.invoice_amount, -2) %]</td>
+      <td align="right">[% LxERP.format_amount(invoice.open_amount, -2) %]</td>
+      <td align="right">[% invoice.duedate %]</td>
+      <td>
+       [%- SET reference = invoice.reference_prefix _ invoice.invnumber %]
+       <input name="bank_transfers[].reference" value="[% HTML.escape(reference.substr(0, 140)) %]" maxlength="140" size="60">
+      </td>
+      <td align="right">
+       <input name="bank_transfers[].amount" value="[% LxERP.format_amount(invoice.invoice_amount, -2) %]" style="text-align: right" size="12">
+      </td>
+     </tr>
+    [%- END %]
+   </table>
+  </p>
+
+  [%- IF show_vc_bank_info_footnote %]
+   <p>
+    <sup>(1)</sup>
+    [%- IF is_vendor %]
+     [%- 'No bank information has been entered in this vendor\'s master data entry. You cannot create bank transfers unless you enter bank information.' | $T8 %]
+    [%- ELSE %]
+     [%- 'No bank information has been entered in this customer\'s master data entry. You cannot create bank collections unless you enter bank information.' | $T8 %]
+    [%- END %]
+   </p>
+  [%- END %]
+
+  <p>
+   <input type="submit" class="submit" name="action_bank_transfer_create" value="[% 'Step 2' | $T8 %]">
+  </p>
+
+  <input type="hidden" name="action" value="dispatcher">
+  <input type="hidden" name="vc" value="[%- HTML.escape(vc) %]">
+ </form>
+
+ <script type="text/javascript">
+  <!--
+    $(function() {
+      $("#select_all").checkall('INPUT[name="bank_transfers[].selected"]');
+    });
+    -->
+ </script>

@@ -1,0 +1,378 @@
+[%- USE L %]
+[%- USE HTML %]
+[%- USE T8 %]
+[%- USE LxERP %]
+
+<script type="text/javascript">
+<!--
+  function setTaxkey(accno, row) {
+    var taxkey = accno.options[accno.selectedIndex].value;
+    var reg = /--([0-9]*)/;
+    var found = reg.exec(taxkey);
+    var index = found[1];
+    index = parseInt(index);
+    var tax = 'taxchart_' + row;
+    for (var i = 0; i < document.getElementById(tax).options.length; ++i) {
+      var reg2 = new RegExp("^"+ index, "");
+      if (reg2.exec(document.getElementById(tax).options[i].value)) {
+        document.getElementById(tax).options[i].selected = true;
+        break;
+      }
+    }
+  };
+//-->
+</script>
+
+<script type="text/javascript" src="js/show_history.js"></script>
+
+<form method="post" action="[% script | html %]">
+
+<input type="hidden" name="selectvendor" value="[% selectvendor | html %]">
+<input type="hidden" name="selectdepartment" value="[% selectdepartment | html %]">
+<input type="hidden" name="selectcurrency" value="[% selectcurrency | html %]">
+
+<input type="hidden" name="oldvendor" value="[% oldvendor | html %]">
+<input type="hidden" name="vendor_id" value="[% vendor_id | html %]">
+<input type="hidden" name="terms" value="[% terms | html %]">
+
+<input type="hidden" name="creditlimit" value="[% creditlimit | html %]">
+<input type="hidden" name="creditremaining" value="[% creditremaining | html %]">
+
+<input type="hidden" name="forex" value="[% forex | html %]">
+
+<input type="hidden" name="id" value="[% id | html %]">
+<input type="hidden" name="sort" value="[% sort | html %]">
+<input type="hidden" name="closedto" value="[% closedto | html %]">
+<input type="hidden" name="locked" value="[% locked | html %]">
+<input type="hidden" name="title" value="[% title_ | html %]">
+
+<input type="hidden" name="follow_up_trans_id_1" value="[% id | html %]">
+<input type="hidden" name="follow_up_trans_type_1" value="ap_transaction">
+<input type="hidden" name="follow_up_trans_info_1" value="[% follow_up_trans_info | html %]">
+<input type="hidden" name="follow_up_rowcount" value="1">
+
+<input type="hidden" name="defaultcurrency" value="[% defaultcurrency | html %]">
+<input type="hidden" name="fxgain_accno" value="[% fxgain_accno | html %]">
+<input type="hidden" name="fxloss_accno" value="[% fxloss_accno | html %]">
+
+<input type="hidden" name="oldinvtotal" value="[% oldinvtotal | html %]">
+<input type="hidden" name="oldtotalpaid" value="[% oldtotalpaid | html %]">
+
+<input type="hidden" name="taxaccounts" value="[% taxaccounts | html %]">
+
+<input type="hidden" name="rowcount" value="[% rowcount | html %]">
+
+<input type="hidden" name="paidaccounts" value="[% paidaccounts | html %]">
+
+[% FOREACH i IN [1..paidaccounts] %]
+  [% temp = "acc_trans_id_"_ i %]
+  <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+
+  [% temp = "gldate_"_ i %]
+  <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+[% END %]
+
+<h1>[% title | html %]</h1>
+
+[% IF ( saved_message ) %]
+  <p>[% saved_message | html %]</p>
+[% END %]
+
+<div class="tabwidget">
+ <ul>
+  <li><a href="#ui-tabs-basic-data">[% 'Basic Data' | $T8 %]</a></li>
+[%- IF id %]
+  <li><a href="controller.pl?action=RecordLinks/ajax_list&object_model=PurchaseInvoice&object_id=[% HTML.url(id) %]">[% 'Linked Records' | $T8 %]</a></li>
+[%- END %]
+ </ul>
+
+<div id="ui-tabs-basic-data">
+<table width="100%">
+  <tr valign="top">
+    <td>
+      <table width="100%">
+        <tr valign="top">
+          <td>
+            <table>
+              <tr>
+                <th align="right" nowrap>[% 'Vendor' | $T8 %]</th>
+                <td colspan="3">
+                  [% IF ( selectvendor ) %]
+                    <select name="vendor" onchange="document.getElementById('update_button').click();">[% selectvendor %]</select>
+                  [% ELSE %]
+                    <input name=vendor value="[% vendor | html %]" size="35">
+                  [% END %]
+                  <input type="button" value="D" onclick="show_vc_details('vendor')">
+                </td>
+              </tr>
+
+              <tr>
+                <td></td>
+                <td colspan="3">
+                  <table width="100%">
+                    <tr>
+                      <th align="left" nowrap>[% 'Credit Limit' | $T8 %]</th>
+                      <td>[% creditlimit | html %]</td>
+                      <th align="left" nowrap>[% 'Remaining' | $T8 %]</th>
+                      <td class="plus[% creditremaining_plus %]">[% creditremaining | html %]</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <tr>
+                <th align="right" nowrap>[% 'Currency' | $T8 %]</th>
+                <td><select name="currency">[% selectcurrency %]</select></td>
+
+                [% IF ( defaultcurrency && (currency != defaultcurrency) ) %]
+                  <th align=right>[% 'Exchangerate' | $T8 %]</th>
+                  [% IF ( forex ) %]
+                    <td><input type="hidden" name="exchangerate" value="[% exchangerate | html %]">[% exchangerate | html %]</td>
+                  [% ELSE %]
+                    <td><input type="text" name="exchangerate" size="10" value="[% exchangerate | html %]"></td>
+                  [% END %]
+                [% END %]
+
+              </tr>
+
+              [% IF ( selectdepartment ) %]
+                <tr>
+                  <th align="right" nowrap>[% 'Department' | $T8 %]</th>
+                  <td colspan="3">
+                    <select name="department">[% selectdepartment %]</select>
+                  </td>
+                </tr>
+              [% END %]
+
+              <tr>
+                <td align="right"><input name="taxincluded" class="checkbox" type="checkbox" value="1" [% IF ( taxincluded ) %]checked[% END %]></td>
+                <th align=left nowrap>[% 'Tax Included' | $T8 %]</th>
+              </tr>
+              <tr>
+                <td align="right"><input name="direct_debit" class="checkbox" type="checkbox" value="1" [% IF direct_debit %]checked[% END %]></td>
+                <th align="left" nowrap>[% 'direct debit' | $T8 %]</th>
+              </tr>
+            </table>
+          </td>
+
+          <td align="right">
+            <table>
+              <tr>
+                <th align="right" nowrap>[% 'Invoice Number' | $T8 %]</th>
+                <td><input name="invnumber" size="11" value="[% invnumber | html %]" [% readonly %]></td>
+              </tr>
+              <tr>
+                <th align="right" nowrap>[% 'Order Number' | $T8 %]</th>
+                <td><input name="ordnumber" size="11" value="[% ordnumber | html %]" [% readonly %]></td>
+              </tr>
+              <tr>
+                <th align="right" nowrap>[% 'Invoice Date' | $T8 %]</th>
+                <td>[% L.date_tag('transdate', transdate) %]</td>
+              </tr>
+              <tr>
+                <th align="right" nowrap>[% 'Due Date' | $T8 %]</th>
+                <td>[% L.date_tag('duedate', duedate) %]</td>
+              </tr>
+              <tr>
+                <th align="right" nowrap>[% 'Project Number' | $T8 %]</th>
+                <td>
+                  [% L.select_tag('globalproject_id', ALL_PROJECTS, with_empty = 1, default = globalproject_id, value_key = 'id', title_key = 'projectnumber') %]
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <table width=100%>
+        <tr class=listheading>
+          <th class=listheading style="width:15%">[% 'Account' | $T8 %]</th>
+          <th class=listheading style="width:10%">[% 'Amount' | $T8 %]</th>
+          <th class=listheading style="width:10%">[% 'Tax' | $T8 %]</th>
+          <th class=listheading style="width:10%">[% 'Taxkey' | $T8 %]</th>
+          <th class=listheading style="width:10%">[% 'Project' | $T8 %]</th>
+        </tr>
+
+        [% FOREACH i IN [1..rowcount] %]
+          <tr>
+            <td>
+              [% selected_accno_full = "selected_accno_full_"_ i %]
+              [% L.select_tag('AP_amount_'_ i, ALL_CHARTS_AP_amount, value_title_sub = \AP_amount_value_title_sub, onchange = 'setTaxkey(this, '_ i _')', default = $selected_accno_full) %]
+
+              <input type="hidden" name="previous_AP_amount_[% i %]" value="[% $selected_accno_full %]">
+              <input type="hidden" name="tax_[% i %]" value="[% temp = "tax"_ i %][% $temp | html %]">
+            </td>
+            <td>
+              <input name="amount_[% i %]" size="10" value="[% temp = "amount_"_ i %][% $temp | html %]">
+            </td>
+            <td>
+              [% temp = "tax_"_ i %][% $temp | html %]
+            </td>
+            <td>
+              [% temp = 'selected_taxchart_'_ i %]
+              [% L.select_tag('taxchart_'_ i, ALL_TAXCHARTS, value_title_sub = \taxchart_value_title_sub, default = $temp) %]
+            </td>
+            <td>
+              [% temp = "project_id_"_ i %]
+              [% L.select_tag(temp, ALL_PROJECTS, with_empty = 1, default = loop.last ? globalproject_id : $temp, value_key = 'id', title_key = 'projectnumber') %]
+            </td>
+          </tr>
+        [% END %]
+
+        <tr>
+          <td colspan="6">
+            <hr noshade>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            [% L.select_tag('APselected', ALL_CHARTS_AP, value_title_sub = \APselected_value_title_sub, default = APselected) %]
+          </td>
+          <th align="left">[% invtotal | html %]</th>
+          <td colspan="4"></td>
+        </tr>
+      </table>
+     </td>
+    </tr>
+    <tr>
+      <td>
+        <table width="100%">
+        <tr>
+          <th align="left" width="1%">[% 'Notes' | $T8 %]</th>
+          <td align="left">
+            <textarea name="notes" rows="[% textarea_rows %]" cols="50" wrap="soft" [% readonly %]>[% notes | html %]</textarea>
+          </td>
+
+          <th align="left" width=1%>[% 'Notes for vendor' | $T8 %]</th>
+          <td align="left">
+            <textarea name="intnotes" rows="[% textarea_rows %]" cols="50" wrap="soft" readonly>[% intnotes | html %]</textarea>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%">
+        <tr class="listheading">
+          <th class="listheading" colspan="7">[% 'Payments' | $T8 %]</th>
+        </tr>
+
+        <tr>
+          <th>[% 'Date' | $T8 %]</th>
+          <th>[% 'Source' | $T8 %]</th>
+          <th>[% 'Memo' | $T8 %]</th>
+          <th>[% 'Amount' | $T8 %]</th>
+          [% IF ( !defaultcurrency || (currency != defaultcurrency) ) %]
+            <th>[% 'Exch' | $T8 %]</th>
+          [% END %]
+          <th>[% 'Account' | $T8 %]</th>
+          <th>[% 'Project Number' | $T8 %]</th>
+        </tr>
+
+        [% FOREACH i IN [1..paidaccounts] %]
+          [% temp = "paidaccount_changeable_"_ i %]
+          [% changeable = $temp %]
+
+          <tr>
+            [% temp = "datepaid_"_ i %]
+            <td align="center">
+              [% IF( changeable ) %]
+                [% L.date_tag(temp, $temp) %]
+              [% ELSE %]
+                [% $temp | html %]
+                <input type="hidden" name="[% temp %]" value="[% $temp | html %]">|;
+              [% END %]
+            </td>
+
+            [% temp = "source_"_ i %]
+            <td align="center">
+              [% IF( changeable ) %]
+                <input name="[% temp %]" size="11" value="[% $temp | html %]">
+              [% ELSE %]
+                [% $temp | html %]
+                <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+              [% END %]
+            </td>
+
+            [% temp = "memo_"_ i %]
+            <td align="center">
+              [% IF( changeable ) %]
+                <input name="[% temp %]" size="11" value="[% $temp | html %]">
+              [% ELSE %]
+                [% $temp | html %]
+                <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+              [% END %]
+            </td>
+
+            [% temp = "paid_"_ i %]
+            <td align="center">
+              [% IF( changeable ) %]
+                <input name="[% temp %]" size="11" value="[% $temp | html %]" onBlur="check_right_number_format(this);">
+              [% ELSE %]
+                [% $temp | html %]
+                <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+              [% END %]
+            </td>
+
+            [% IF ( !defaultcurrency || (currency != defaultcurrency) ) %]
+              <td align="center">
+                [% temp = "exchangerate_"_ i %]
+                [% temp_forex = "forex_"_ i %]
+
+                [% IF( $temp_forex || !changeable ) %]
+                  [% $temp | html %]
+                  <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+                [% ELSE %]
+                  <input name="[% temp %]" size="11" value="[% $temp | html %]">
+                [% END %]
+
+                <input type=hidden name="[% temp_forex %]" value="[% $temp_forex | html %]">
+              </td>
+            [% END %]
+
+            [% temp = "AP_paid_"_ i %]
+            <td align="center">
+              [% IF( changeable ) %]
+                [% L.select_tag(temp, ALL_CHARTS_AP_paid, value_title_sub = \AP_paid_value_title_sub, default = $temp) %]
+              [% ELSE %]
+                [% $temp | html %]
+                <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+              [% END %]
+            </td>
+
+            <td align="center">
+              [% temp = "paid_project_id_"_ i %]
+              [% IF( changeable ) %]
+                [% L.select_tag(temp, ALL_PROJECTS, with_empty = 1, default = $temp, value_key = 'id', title_key = 'projectnumber') %]
+              [% ELSE %]
+                <input type="hidden" name="[% temp %]" value="[% $temp | html %]">
+                [% temp = "label"_ temp %]
+                [% $temp | html %]
+              [% END %]
+            </td>
+          </tr>
+        [% END %]
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td align="center">[% 'Total' | $T8 %]</td>
+          <td align="center">[% LxERP.format_amount(totalpaid, 2) | html %]</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td align="center">[% 'Missing amount' | $T8 %]</td>
+          <td align="center">[% LxERP.format_amount(paid_missing, 2) | html %]</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</div>
+</div>

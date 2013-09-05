@@ -1,0 +1,362 @@
+#!/usr/bin/perl
+
+use warnings;
+use strict;
+use 5.008;                          # too much magic in here to include perl 5.6
+
+BEGIN {
+  unshift @INC, "modules/override"; # Use our own versions of various modules (e.g. YAML).
+  push    @INC, "modules/fallback"; # Only use our own versions of modules if there's no system version.
+}
+
+use Data::Dumper;
+use Devel::REPL 1.002001;
+use File::Slurp;
+use Getopt::Long;
+use Pod::Usage;
+use Term::ReadLine::Perl::Bind;     # use sane key binding for rxvt users
+
+use SL::LxOfficeConf;
+SL::LxOfficeConf->read;
+
+my $client       = $::lx_office_conf{console}{client};
+my $login        = $::lx_office_conf{console}{login}        || 'demo';
+my $history_file = $::lx_office_conf{console}{history_file} || '/tmp/kivitendo_console_history.log'; # fallback if users is not writable
+my $debug_file   = $::lx_office_conf{console}{log_file}     || '/tmp/kivitendo_console_debug.log';
+my $autorun      = $::lx_office_conf{console}{autorun};
+my ($execute_code, $execute_file, $help, $man);
+
+my $result = GetOptions(
+  "login|l=s"        => \$login,
+  "client|c=s"       => \$client,
+  "history-file|i=s" => \$history_file,
+  "log-file|o=s"     => \$debug_file,
+  "execute|e=s"      => \$execute_code,
+  "file|f=s"         => \$execute_file,
+  "help|h"           => \$help,
+  "man"              => \$man,
+);
+pod2usage(2)                               if !$result;
+pod2usage(1)                               if $help;
+pod2usage(-exitstatus => 0, -verbose => 2) if $man;
+
+# will be configed eventually
+my @plugins      = qw(History LexEnv Colors MultiLine::PPI FancyPrompt PermanentHistory AutoloadModules);
+
+sub execute_code {
+  my ($repl, $code) = @_;
+
+  my $result = $repl->eval($code);
+  if (ref($result) eq 'Devel::REPL::Error') {
+    $repl->print($result->message);
+    return 0;
+  }
+  if ($@) {
+    $repl->print($@);
+    return 0;
+  }
+
+  return 1;
+}
+
+my $repl = Devel::REPL->new;
+$repl->load_plugin($_) for @plugins;
+$repl->load_history($history_file);
+$repl->eval('help');
+$repl->print("trying to auto login into client '$client' with login '$login'...\n");
+execute_code($repl, "lxinit '$client', '$login'");
+
+my @code_to_execute = grep { $_ } ($autorun, $execute_code, $execute_file ? join('', read_file($execute_file)) : undef);
+execute_code($repl, $_) || exit 1 for @code_to_execute;
+exit  if $execute_code || $execute_file;
+
+$repl->run;
+
+package Devel::REPL;
+
+use utf8;
+use CGI qw( -no_xhtml);
+use DateTime;
+use SL::Auth;
+use SL::Form;
+use SL::Helper::DateTime;
+use SL::InstanceConfiguration;
+use SL::Locale;
+use SL::LXDebug;
+use Data::Dumper;
+use List::Util qw(max);
+
+# this is a cleaned up version of am.pl
+# it lacks redirection, some html setup and most of the authentication process.
+# it is assumed that anyone with physical access and execution rights on this script
+# won't be hindered by authentication anyway.
+sub lxinit {
+  my ($client, $login) = @_;
+
+  die 'need client and login' unless $client && $login;
+
+  package main;
+
+  $::lxdebug       = LXDebug->new(file => $debug_file);
+  $::locale        = Locale->new($::lx_office_conf{system}->{language});
+  $::form          = Form->new;
+  $::auth          = SL::Auth->new;
+  die "Cannot find client with ID or name '$client'" if !$::auth->set_client($client);
+
+  $::instance_conf = SL::InstanceConfiguration->new;
+  $::request       = SL::Request->new(
+    cgi    => CGI->new({}),
+    layout => SL::Layout::None->new,
+  );
+
+  die 'cannot reach auth db'               unless $::auth->session_tables_present;
+
+  $::auth->restore_session;
+
+  require "bin/mozilla/common.pl";
+
+  die "cannot find user $login"            unless %::myconfig = $::auth->read_user(login => $login);
+
+  $::form->{login} = $login; # normaly implicit at login
+
+  die "cannot find locale for user $login" unless $::locale   = Locale->new($::myconfig{countrycode});
+
+  $::instance_conf->init;
+
+  return "logged in as $login";
+}
+
+# these function provides a load command to slurp in a lx-office module
+# since it's seldomly useful, it's not documented in help
+sub load {
+  my $module = shift;
+  $module =~ s/[^\w]//g;
+  require "bin/mozilla/$module.pl";
+}
+
+sub reload {
+  require Module::Reload;
+  Module::Reload->check();
+
+  return "modules reloaded";
+}
+
+sub quit {
+  exit;
+}
+
+sub help {
+  print <<EOL;
+
+  kivitendo Konsole
+
+  ./scripts/console [login]
+
+Spezielle Kommandos:
+
+  help                - zeigt diese Hilfe an.
+  lxinit 'login'      - lädt das kivitendo-Environment für den User 'login'.
+  reload              - lädt modifizierte Module neu.
+  pp DATA             - zeigt die Datenstruktur mit Data::Dumper an.
+  quit                - beendet die Konsole
+
+EOL
+#  load   'module'     - läd das angegebene Modul, d.h. bin/mozilla/module.pl und SL/Module.pm.
+}
+
+sub pp {
+  local $Data::Dumper::Indent   = 2;
+  local $Data::Dumper::Maxdepth = 2;
+  local $Data::Dumper::Sortkeys = 1;
+  Data::Dumper::Dumper(@_);
+}
+
+sub ptab {
+  my @rows = ref($_[0]) eq 'ARRAY' ? @{ $_[0] } : @_;
+  return '<empty result set>' unless @rows;
+
+  my @columns = sort keys %{ $rows[0] };
+  my @widths  = map { max @{ $_ } } map { my $column = $_; [ length($column), map { length("" . ($_->{$column} // '')) } @rows ] } @columns;
+  my @output  = (join ' | ', map { my $width = $widths[$_]; sprintf "\%-${width}s", $columns[$_] } (0..@columns - 1));
+  push @output, join('-+-', map { '-' x $_ } @widths);
+  push @output, map { my $row = $_; join(' | ', map { my $width = $widths[$_]; sprintf "\%-${width}s", $row->{ $columns[$_] } // '' } (0..@columns - 1) ) } @rows;
+
+  return join("\n", @output);
+}
+
+sub pobj {
+  my ($obj) = @_;
+  return '<no object>' unless $obj;
+
+  my $ref        =  ref $obj;
+  $ref           =~ s/^SL::DB:://;
+  my %primaries  =  map { ($_ => 1) } $obj->meta->primary_key;
+  my @columns    =  map { "${_}:" . ($obj->$_ // 'UNDEF') } sort $obj->meta->primary_key;
+  push @columns,    map { "${_}:" . ($obj->$_ // 'UNDEF') } grep { !$primaries{$_} } sort map { $_->{name} } $obj->meta->columns;
+
+  return "<${ref} " . join(' ', @columns) . '>';
+}
+
+sub sql {
+  my $dbh            = ref($_[0]) ? shift : $::form->get_standard_dbh;
+  my ($query, @args) = @_;
+
+  if ($query =~ m/^\s*select/i) {
+    ptab($dbh->selectall_arrayref($query, { Slice => {} }, @args));
+  } else {
+    $dbh->do($query, { Slice => {} }, @args);
+  }
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+scripts/console - kivitendo console
+
+=head1 SYNOPSIS
+
+  ./script/console [options]
+  > help               # displays a brief documentation
+
+=head1 OPTIONS
+
+The list of supported command line options includes:
+
+=over 8
+
+=item B<--help>, B<-h>
+
+Print this help message and exit.
+
+=item B<--man>
+
+Print the manual page and exit.
+
+=item B<-l>, B<--login>=C<username>
+
+Log in as C<username>. The default is to use the value from the
+configuration file and C<demo> if none is set there.
+
+=item B<-o>, B<--log-file>=C<filename>
+
+Use C<filename> as the log file. The default is to use the value from
+the configuration file and C</tmp/kivitendo_console_debug.log> if none
+is set there.
+
+=item B<-i>, B<--history-file>=C<filename>
+
+Use C<filename> as the history file for commands input by the
+user. The default is to use the value from the configuration file and
+C</tmp/kivitendo_console_history.log> if none is set there.
+
+=item B<-e>, B<--execute>=C<perl-code>
+
+Execute this code on startup and exit afterwards.
+
+=item B<-f>, B<--file>=C<filename>
+
+Execute the code from the file C<filename> on startup and exit
+afterwards.
+
+=back
+
+=head1 DESCRIPTION
+
+Users of Ruby on Rails will recognize this as a perl reimplementation of the
+rails scripts/console. It's intend is to provide a shell environment to the
+lx-office internals. This will mostly not interest you if you just want to do
+your ERP stuff with lx-office, but will be invaluable for those who wish to
+make changes to lx-office itself.
+
+=head1 FUNCTIONS
+
+You can do most things in the console that you could do in an actual perl
+script. Certain helper functions will aid you in debugging the state of the
+program:
+
+=head2 pp C<DATA>
+
+Named after the rails pretty print gem, this will call Data::Dumper on the
+given C<DATA>. Use it to see what is going on.
+
+Currently C<pp> will set the Data::Dumper depth to 2, so if you need a
+different depth, you'll have to change that. A nice feature would be to
+configure that, or at least to be able to change it at runtime.
+
+=head2 ptab C<@data>
+
+Returns a tabular representation of C<@data>. C<@data> must be an
+array or array reference containing hash references. Column widths are
+calculated automatically.
+
+Undefined values are represented by an empty column.
+
+Example usage:
+
+    ptab($dbh->selectall_arrayref("SELECT * FROM employee", { Slice => {} }));
+
+=head2 pobj C<$obj>
+
+Returns a textual representation of the L<Rose::DB> instance
+C<$obj>. This includes the class name, then the primary key columns as
+name/value pairs and then all other columns as name/value pairs.
+
+Undefined values are represented by C<UNDEF>.
+
+Example usage:
+
+    pobj(SL::DB::Manager::Employee->find_by(login => 'demo'));
+
+=head2 sql C<[ $dbh, ] $query, @bind_values>
+
+Executes an SQL query using the optional bind values. If the first
+parameter is a database handle then that database handle is used;
+otherwise the handle returned by L<SL::Form/get_standard_dbh> is used.
+
+If the query is a C<SELECT> then the result is filtered through
+L<ptab()>. Otherwise the result of C<$dbh-&gt;do($query, undef, @bind_values)>
+is returned.
+
+Example usage:
+
+    sql(qq|SELECT * FROM employee|);
+    sql(SL::DB::Employee->new->db->dbh,
+        qq|UPDATE employee SET notes = ? WHERE login = ?|,
+        'This guy is evil!', 'demo');
+
+=head2 lxinit C<login>
+
+Login into lx-office using a specified login. No password will be required, and
+security mechanisms will mostly be inactive. form, locale, myconfig will be
+correctly set.
+
+=head2 reload
+
+Attempts to reload modules that changed since last reload (or inital startup).
+This will mostly work just fine, except for Moose classes that have been made
+immutable. Keep in mind that existing objects will continue to have the methods
+of the classes they were created with.
+
+=head1 BUGS
+
+ - Reload on immutable Moose classes is buggy.
+ - Logging in more than once is not supported by the program, and thus not by
+   the console. It seems to work, but strange things may happen.
+
+=head1 SEE ALSO
+
+Configuration of this script is located in:
+
+ config/kivitendo.conf
+ config/kivitendo.conf.default
+
+See there for interesting options.
+
+=head1 AUTHOR
+
+  Sven Schöling <s.schoeling@linet-services.de>
+
+=cut

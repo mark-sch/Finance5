@@ -1,0 +1,100 @@
+[%- USE T8 %]
+[% USE HTML %][%- USE LxERP -%]
+ <script type="text/javascript">
+<!--
+function clockon() {
+  var now = new Date();
+  var h = now.getHours();
+  var m = now.getMinutes();
+  document.getElementById('clock_id').innerHTML = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m);
+  var timer=setTimeout("clockon()", 10000);
+}
+$(clockon);
+//-->
+ </script>
+
+ <script type="text/javascript" src="js/dhtmlsuite/menu-for-applications.js"></script>
+
+ <div id="frame-header">
+  <span class="frame-header-element frame-header-left">
+   [<a href="login.pl?action=company_logo" target="_blank">[% 'new Window' | $T8 %]</a>]
+   [<a href="JavaScript:top.print()">[% 'print' | $T8 %]</a>]
+   [[% 'Search contacts' | $T8 %] <input size="15" name="search_term" id="search_term" onkeydown="return on_keydown_quicksearch($('#search_term'), event)">]
+  </span>
+  <span class="frame-header-element frame-header-right">
+   [[% 'User' | $T8 %]: [% MYCONFIG.login | html %] -
+    [% 'Client' | $T8 %]: [% AUTH.client.name | html %] -
+   <a href="controller.pl?action=LoginScreen/logout" target="_top">[% 'logout' | $T8 %]</a>]
+   [% date %] <span id='clock_id' style='position:relative'></span>&nbsp;
+  </span>
+  <span class="frame-header-element frame-header-right" id="ajax-spinner">
+   <img src="image/[% IF MYCONFIG.stylesheet == 'lx-office-erp.css' %]spinner-blue.gif[% ELSE %]spinner-white.gif[% END %]" alt="[% LxERP.t8('Loading...') %]">
+  </span>
+ </div>
+
+ <div id="main_menu_div"></div>
+
+ [%- SET main_id = '100' %]
+ <ul id="main_menu_model"  style='display:none'>
+ [%- FOREACH mainitem = menu_items %]
+  [%- SET main_id = main_id + 1 %]
+  <li id="[% main_id %]"[% IF mainitem.image %] itemIcon="[% mainitem.image %]"[% END %]>
+   <a href="[% IF mainitem.href %][% mainitem.href %][% ELSE %]#[% END %]"[% IF mainitem.target && (mainitem.target != 'main_window') %] target="[% HTML.escape(mainitem.target) %]"[% END %]>
+    [%- HTML.escape(mainitem.title) %]
+   </a>
+   [%- IF mainitem.subitems %]
+    <ul[%- IF force_ul_width %] width="[% mainitem.max_width * 10 %]"[% END %]>
+     [%- SET sub1_id = main_id * 100 %]
+     [%- FOREACH sub1item = mainitem.subitems %]
+      [%- SET sub1_id = sub1_id + 1 %]
+      <li id="[% sub1_id %]"[% IF sub1item.image %] itemIcon="[% sub1item.image %]"[% END %]>
+       <a href="[% IF sub1item.href %][% sub1item.href %][% ELSE %]#[% END %]"[% IF sub1item.target && (sub1item.target != 'main_window') %] target="[% HTML.escape(sub1item.target) %]"[% END %]>
+        [%- HTML.escape(sub1item.title) %]
+       </a>
+       [%- IF sub1item.subitems %]
+        <ul[%- IF force_ul_width %] width="[% sub1item.max_width * 10 %]"[% END %]>
+         [%- SET sub2_id = sub1_id * 100 %]
+         [%- FOREACH sub2item = sub1item.subitems %]
+          [%- SET sub2_id = sub2_id + 1 %]
+          <li id="[% sub2_id %]"[% IF sub2item.image %] itemIcon="[% sub2item.image %]"[% END %]>
+           <a href="[% IF sub2item.href %][% sub2item.href %][% ELSE %]#[% END %]"[% IF sub2item.target && (sub2item.target != 'main_window') %] target="[% HTML.escape(sub2item.target) %]"[% END %]>
+            [%- HTML.escape(sub2item.title) %]
+           </a>
+          </li>
+         [%- END %]
+        </ul>
+       [%- END %]
+      </li>
+     [%- END %]
+    </ul>
+   [%- END %]
+  </li>
+ [%- END %]
+ </ul>
+
+ <script type="text/javascript">
+  <!--
+
+$(function(){
+  DHTMLSuite.createStandardObjects();
+
+  DHTMLSuite.configObj.setImagePath('image/dhtmlsuite/');
+
+  var menu_model = new DHTMLSuite.menuModel();
+  menu_model.addItemsFromMarkup('main_menu_model');
+  menu_model.init();
+
+  var menu_bar = new DHTMLSuite.menuBar();
+  menu_bar.addMenuItems(menu_model);
+  menu_bar.setTarget('main_menu_div');
+  menu_bar.init();
+});
+
+
+
+function open_url(url, target) {
+
+}
+
+    -->
+ </script>

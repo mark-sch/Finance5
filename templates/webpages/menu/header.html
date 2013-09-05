@@ -1,0 +1,19 @@
+[%- USE T8 %][%- USE LxERP -%]
+<div id="frame-header">
+ <span class="frame-header-element frame-header-right">
+  [<a href="JavaScript:Switch_Menu();" title="[% 'Switch Menu on / off' | $T8 %]">[% 'Menu' | $T8 %]</a>]
+    [<a href="controller.pl?action=LoginScreen/user_login" target="_blank" title="[% 'Open a further kivitendo window or tab' | $T8 %]">[% 'New window/tab' | $T8 %]</a>]
+    [<a href="JavaScript:top.print();" title="[% 'Hardcopy' | $T8 %]">[% 'Print' | $T8 %]</a>]
+    [<a href="Javascript:top.history.back();" title="[% 'Go one step back' | $T8 %]">[% 'Back' | $T8 %]</a>]
+    [<a href="Javascript:top.history.forward();" title="[% 'Go one step forward' | $T8 %]">[% 'Fwd' | $T8 %]</a>]
+
+  [[% 'User' | $T8 %]: [% MYCONFIG.login | html %] -
+   [% 'Client' | $T8 %]: [% AUTH.client.name | html %] -
+   <a href="controller.pl?action=LoginScreen/logout" target="_top" title="[% 'Logout now' | $T8 %]">[% 'Logout' | $T8 %]</a>]
+  [% now.to_lxoffice %] -
+  [% now.hms %]
+ </span>
+ <span class="frame-header-element frame-header-right" id="ajax-spinner">
+  <img src="image/[% IF MYCONFIG.stylesheet == 'lx-office-erp.css' %]spinner-blue.gif[% ELSE %]spinner-white.gif[% END %]" alt="[% LxERP.t8('Loading...') %]">
+ </span>
+</div>

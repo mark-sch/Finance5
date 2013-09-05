@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+
+use FCGI;
+use SL::Dispatcher;
+use SL::FCGIFixes;
+
+our $dispatcher = SL::Dispatcher->new('FastCGI');
+$dispatcher->pre_startup_setup;
+SL::FCGIFixes::apply_fixes();
+$dispatcher->pre_startup_checks;
+
+my $request = FCGI::Request();
+$dispatcher->handle_request($request) while $request->Accept() >= 0;
+
+1;

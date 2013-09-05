@@ -1,0 +1,91 @@
+[%- USE T8 %]
+[% USE HTML %]<body>
+
+ <script language="javascript" src="js/iframe.js"></script>
+ <script type="text/javascript">
+<!--
+function clockon() {
+  var now = new Date();
+  var h = now.getHours();
+  var m = now.getMinutes();
+  var s = now.getSeconds();
+  document.getElementById('clock_id').innerHTML = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s)+"h";
+  var timer=setTimeout("clockon()", 1000);
+}
+window.onload=clockon
+//-->
+ </script>
+
+ <div id="menu">
+
+  [% menu %]
+
+ </div>
+
+ <div id="menu-status" border="0">
+    &nbsp;
+    [<a href="menu-f5.pl?action=display" target="_blank">[% 'new Window' | $T8 %]</a>]
+    &nbsp;&nbsp;
+    [<a href="JavaScript:top.main_window.print()">[% 'print' | $T8 %]</a>]
+    &nbsp;&nbsp;
+    [[% 'User' | $T8 %]: [% HTML.escape(login) %] -
+    <a href="login.pl?action=logout" target="_top">[% 'logout' | $T8 %]</a>]
+    &nbsp;&nbsp;
+    [% date %] <span id='clock_id' style='position:relative'></span>&nbsp;
+ </div>
+
+<div style="clear: both;"></div>
+
+ <div id="chatstatus">
+     <div><a id="btnStartGC" href="javascript:openRoom('support')"><img id="gcChatOnlineImage" class="imgChatOnline" src="f5-images/chat-icon-online.png" style="border-width: 0px; display: none;"/><img id="gcChatOfflineImage" class="imgChatOffline" src="f5-images/chat-icon-offline.png" style="border-width: 0px; display: block;"/></a></div>
+ </div>
+
+ <div style="clear: both;"></div>
+
+
+ <div id="logo" onclick="document.location='login.pl'">Finance<font color="#E53440">5</font></div>
+
+<div id="page">
+	<div id="container-navigation">
+	   <ul>
+	   <li><a href="ct.pl?action=Weiter&db=customer&nextsub=list_names&l_city=Y&l_contact=Y&l_customernumber=Y&l_email=Y&l_name=Y&l_phone=Y&l_street=Y&l_zipcode=Y&obsolete=N&status=all" target="main_window">Kunden</a></li>
+	   <li><a href="ic.pl?searchitems=part&title=Waren&revers=0&lastsort=&nextsub=generate_report&sort=description&ndxs_counter=0&partnumber=&ean=&description=&partsgroup_id=&serialnumber=&make=&model=&drawing=&microfiche=&itemstatus=active&transdatefrom=&transdateto=&l_partnumber=Y&l_description=Y&l_unit=Y&l_sellprice=Y&l_lastcost=Y&l_linetotal=Y&action=Weiter" target="main_window">Waren</a></li>
+           <li><a href="ar.pl?action=Weiter&nextsub=ar_transactions&open=1&closed=1&l_amount=Y&l_invnumber=Y&l_name=Y&l_netamount=Y&l_paid=Y&l_transdate=Y&sort=transdate" target="main_window">Rechnungen</a></li>
+	   <li><a href="gl.pl?action=Weiter&category=X&datesort=gldate&nextsub=generate_report&l_accno=Y&l_credit=Y&l_debit=Y&l_description=Y&l_gldate=Y&l_reference=Y&l_source=Y&l_transdate=Y&sort=transdate&sortdir=0" target="main_window">Buchungen</a></li>
+	   <li><a href="gl.pl?action=Weiter&category=X&datesort=gldate&nextsub=generate_report&l_accno=Y&l_credit=Y&l_debit=Y&l_description=Y&l_gldate=Y&l_reference=Y&l_source=Y&l_transdate=Y&sort=datesort" target="main_window">Erinnerungen</a></li>
+	   </ul>
+	</div>
+
+	<iframe id="main_window" name="main_window" src="login.pl?action=company_logo" width="1098" scrolling="no" frameborder="0" name="main_window" style="position:relative; border: 0px; z-index: 99; min-height:550px;">
+  		<p>Ihr Browser kann leider keine eingebetteten Frames anzeigen. Wir empfehlen die Verwendung einer aktuellen Version von Mozilla Firefox.</p>
+ 	</iframe>
+	<br /><br />
+</div>
+
+
+<div id="footer">
+<div id="footer-left">
+&copy; 2012 <a href="http://www.think5.de">Think5 GmbH</a><br>
+<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="new">GNU GPL Open Source</a> | <a href="http://sourceforge.net/projects/lx-office/">LX-Office powered</a>
+</div>
+
+
+<div id="footer-right">
+
+<a target="_blank" href="http://www.facebook.com/myFinance5"><img width="73" height="73" style="margin-left:10px;" src="f5-images/facebook.png"></a> 
+
+</div>
+</div>
+
+<script language="JavaScript">
+    var isInIFrame = (window.location != window.parent.location) ? true : false;
+    
+    if (isInIFrame == false) {
+      var gc = new Object();
+      gc.guest = true;
+      document.write('<script type="text/javascript" src="http://www.think5.de/saas/config/finance5.js"></scr' + 'ipt>');
+    }
+</script>
+        
+</body>
+</html>

@@ -1,0 +1,100 @@
+[%- USE T8 %]
+[% USE HTML %]
+[% USE L %]
+[% SET all_active = 1 %][% FOREACH row = DUNNINGS %][% IF !row.active %][% SET all_active = 0 %][% LAST %][% END %][% END %]
+[% SET all_email = 1 %][% FOREACH row = DUNNINGS %][% IF !row.email %][% SET all_email = 0 %][% LAST %][% END %][% END %]
+ <script type="text/javascript" src="js/common.js"></script>
+ <script type="text/javascript" src="js/dunning.js"></script>
+
+ <div class="listtop" width="100%">[% title %]</div>
+
+ <p>[% 'The columns &quot;Dunning Duedate&quot;, &quot;Total Fees&quot; and &quot;Interest&quot; show data for the previous dunning created for this invoice.' | $T8 %]</p>
+
+ <form name="Form" method="post" action="dn.pl">
+
+  <table width="100%">
+   <th class="listheading" colspan="2">[% 'Current / Next Level' | $T8 %]</th>
+
+   <th class="listheading">
+    [% L.checkbox_tag('selectall_active', checkall='INPUT[name*=active_]', checked=all_active) %]
+    <label for="selectall_active">[% 'Active?' | $T8 %]</label>
+   </th>
+
+   <th class="listheading">
+    [% L.checkbox_tag('selectall_email', checkall='INPUT[name*=email_]', checked=all_email) %]
+    <label for="selectall_email">[% 'eMail?' | $T8 %]</label>
+   </th>
+
+   <th class="listheading">[% 'Customername' | $T8 %]</th>
+   <th class="listheading">[% 'Language' | $T8 %]</th>
+   <th class="listheading">[% 'Invno.' | $T8 %]</th>
+   <th class="listheading">[% 'Invdate' | $T8 %]</th>
+   <th class="listheading">[% 'Inv. Duedate' | $T8 %]</th>
+   <th class="listheading">[% 'Amount' | $T8 %]</th>
+   <th class="listheading">[% 'Open Amount' | $T8 %]</th>
+   <th class="listheading">[% 'Dunning Duedate' | $T8 %]</th>
+   <th class="listheading">[% 'Total Fees' | $T8 %]</th>
+   <th class="listheading">[% 'Interest' | $T8 %]</th>
+
+   <!-- Ausgabe der einzelnen Zeilen -->
+
+   [% FOREACH row = DUNNINGS %]
+    <tr class="listrow[% loop.count % 2 %]">
+
+     <td>
+      <input type="hidden" name="inv_id_[% loop.count %]" size="2" value="[% HTML.escape(row.id) %]">
+      <input type="hidden" name="customer_id_[% loop.count %]" size="2" value="[% HTML.escape(row.customer_id) %]">
+      [% IF row.dunning_level %][% HTML.escape(row.dunning_level) %][% ELSE %]&nbsp;[% END %]
+     </td>
+
+     <td>
+      <select name="next_dunning_config_id_[% loop.count %]">
+       [% FOREACH cfg_row = row.DUNNING_CONFIG %]<option value="[% HTML.escape(cfg_row.id) %]" [% IF cfg_row.SELECTED %]selected[% END %]>[% HTML.escape(cfg_row.dunning_description) %]</option>[% END %]
+      </select>
+     </td>
+
+     <td><input type="checkbox" name="active_[% loop.count %]" value="1" [% IF row.active %]checked[% END %]></td>
+     <td><input type="checkbox" name="email_[% loop.count %]" value="1" [% IF row.email %]checked[% END %]></td>
+     <td><input type="hidden" name="customername_[% loop.count %]" size="6" value="[% HTML.escape(row.customername) %]">[% HTML.escape(row.customername) %]</td>
+     <td><input type="hidden" name="language_id_[% loop.count %]" size="6" value="[% HTML.escape(row.language_id) %]">[% HTML.escape(row.language) %]</td>
+     <td>
+      <input type="hidden" name="invnumber_[% loop.count %]" size="6" value="[% HTML.escape(row.invnumber) %]">
+      <a href="is.pl?action=edit&type=invoice&id=[% row.id | url %]">[% HTML.escape(row.invnumber) %]</a>
+     </td>
+     <td><input type="hidden" name="invdate_[% loop.count %]" size="6" value="[% HTML.escape(row.transdate) %]">[% HTML.escape(row.transdate) %]</td>
+     <td><input type="hidden" name="inv_duedate_[% loop.count %]" size="6" value="[% HTML.escape(row.duedate) %]">[% HTML.escape(row.duedate) %]</td>
+     <td align="right"><input type="hidden" name="amount_[% loop.count %]" size="6" value="[% HTML.escape(row.amount) %]">[% HTML.escape(row.amount) %]</td>
+     <td align="right"><input type="hidden" name="open_amount_[% loop.count %]" size="6" value="[% HTML.escape(row.open_amount) %]">[% HTML.escape(row.open_amount) %]</td>
+     <td>[% HTML.escape(row.next_duedate) %]</td>
+     <td align="right"><input type="hidden" name="fee_[% loop.count %]" size="6" value="[% HTML.escape(row.fee) %]">[% HTML.escape(row.fee) %]</td>
+     <td align="right"><input type="hidden" name="interest_[% loop.count %]" size="6" value="[% HTML.escape(row.interest) %]">[% HTML.escape(row.interest) %]</td>
+    </tr>
+   [% END %]
+  </table>
+
+  <hr size=3 noshade>
+
+  <input type="checkbox" id='force_lang' name="force_lang" size="6" value="1">
+  [% 'Override invoice language' | $T8 %]
+  [% PRINT_OPTIONS %]
+
+  <br>
+
+  <input name="rowcount" type="hidden" value="[% HTML.escape(rowcount) %]">
+  <input name="groupinvoices" type="hidden" value="[% HTML.escape(groupinvoices) %]">
+
+  <input name="callback" type="hidden" value="[% HTML.escape(callback) %]">
+  <input name="nextsub" type="hidden" value="save_dunning">
+
+  <input type="hidden" name="action" value="[% 'Continue' | $T8 %]">
+
+  <input type="submit" name="dummy" value="[% 'Continue' | $T8 %]"
+         [% UNLESS DEBUG_DUNNING %]onclick="this.disabled=true; this.value='[% 'The dunning process started' | $T8 %]'; document.Form.submit()"[% END %]>
+
+ </form>
+ <script type='text/javascript'>
+   $(function() {
+     $("select[name='language_id']").prop('disabled', $('#force_lang').prop('checked'));
+     $('#force_lang').checkall('select[name="language_id"]', 'disabled');
+   });
+ </script>

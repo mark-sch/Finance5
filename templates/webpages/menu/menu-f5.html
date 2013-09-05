@@ -1,0 +1,41 @@
+[%- USE T8 %]
+[% USE HTML %][%- USE LxERP -%]
+[% UNLESS skip_frame_header %]
+ <script type="text/javascript" src="js/quicksearch_input.js"></script>
+ <script type="text/javascript">
+ <!--
+function clockon() {
+  var now = new Date();
+  var h = now.getHours();
+  var m = now.getMinutes();
+  var s = now.getSeconds();
+  document.getElementById('clock_id').innerHTML = (h<10?'0'+h:h)+":"+(m<10?'0'+m:m)+":"+(s<10?'0'+s:s)+"h";
+  var timer=setTimeout("clockon()", 1000);
+}
+$(clockon);
+//-->
+</script>
+
+<div id="menu">
+  [% menu %]
+</div>
+
+<div id="menu-status">
+ <span class="frame-header-right">
+    [<a href="login.pl?action=company_logo" target="_blank">[% 'new Window' | $T8 %]</a>]&nbsp;&nbsp;
+    [<a href="JavaScript:top.print()">[% 'print' | $T8 %]</a>]&nbsp;&nbsp;
+    [[% 'Search contacts' | $T8 %]: <input size="15" name="search_term" id="search_term" onkeydown="return on_keydown_quicksearch($('#search_term'), event)">]
+    &nbsp;&nbsp;
+    [[% 'User' | $T8 %]: [% MYCONFIG.login | html %] -
+    <a href="controller.pl?action=LoginScreen/logout" target="_top">[% 'logout' | $T8 %]</a>]&nbsp;&nbsp;
+    [% date %] <span id='clock_id' style='position:relative'></span>&nbsp;
+ </span>
+ <span class="frame-header-right" id="ajax-spinner">
+    <img src="image/[% IF MYCONFIG.stylesheet == 'lx-office-erp.css' %]spinner-blue.gif[% ELSE %]spinner-white.gif[% END %]" alt="[% LxERP.t8('Loading...') %]">&nbsp;&nbsp;
+ </span>
+</div>
+
+<div id="logo" onclick="document.location='login.pl'">Finance<font color="#E53440">5</font></div>
+
+[% END %]
+ <div style="clear: both;"></div>

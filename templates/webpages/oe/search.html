@@ -1,0 +1,264 @@
+[%- USE HTML %]
+[%- USE T8 %]
+[%- USE LxERP %]
+[%- USE L %]
+[%- SET vclabel = vc == 'customer' ? LxERP.t8('Customer') : LxERP.t8('Vendor') %]
+[%- SET vcnumberlabel = vc == 'customer' ? LxERP.t8('Customer Number') : LxERP.t8('Vendor Number') %]
+[%- SET vctypelabel = vc == 'customer' ? LxERP.t8('Customer type') : LxERP.t8('Vendor type') %]
+
+<form method="post" action="oe.pl">
+
+ <p><div class="listtop">[% HTML.escape(title) %]</div></p>
+
+<table width="100%">
+ <tr>
+  <td>
+   <table>
+    <tr>
+     <th align="right">[% HTML.escape(vclabel) %]</th>
+     <td colspan="3">
+            [%- INCLUDE 'generic/multibox.html'
+                 name          = vc,
+                 default       = vc == 'customer' ? oldcustomer : oldvendor,
+                 style         = 'width: 250px',
+                 DATA          = ALL_VC,
+                 id_sub        = 'vc_keys',
+                 label_key     = 'name',
+                 select        = vc_select,
+                 limit         = vclimit,
+                 show_empty    = 1,
+                 allow_textbox = 1,
+                 class         = 'initial_focus',
+                 -%]
+     </td>
+    </tr>
+[%- IF ALL_DEPARTMENTS.size %]
+    <tr>
+     <th align="right" nowrap>[% 'Department' | $T8 %]</th>
+     <td colspan="3">
+            [%- INCLUDE 'generic/multibox.html'
+                 name          = 'department_id',
+                 style         = 'width: 250px',
+                 DATA          = ALL_DEPARTMENTS,
+                 id_key        = 'id',
+                 label_key     = 'description',
+                 limit         = vclimit,
+                 show_empty    = 1,
+                 allow_textbox = 1,
+            -%]
+     </td>
+    </tr>
+[%- END %]
+    <tr>
+     <th align="right">[% HTML.escape(ordlabel) %]</th>
+     <td colspan="3"><input name="[% HTML.escape(ordnrname) %]" style="width: 250px"></td>
+    </tr>
+    <tr>
+     <th align="right">[% 'Employee' | $T8 %]</th>
+     <td>[% L.select_tag('employee_id', ALL_EMPLOYEES, title_key='safe_name', with_empty=1, style='width:250px') %]</td>
+    </tr>
+    <tr>
+     <th align="right">[% 'Salesman' | $T8 %]</th>
+     <td>[% L.select_tag('salesman_id', ALL_EMPLOYEES, title_key='safe_name', with_empty=1, style='width:250px') %]</td>
+    </tr>
+    <tr>
+     <th align="right">[% 'Transaction description' | $T8 %]</th>
+     <td colspan="3"><input name="transaction_description" style="width: 250px"></td>
+    </tr>
+    <tr>
+     <th align="right">[% 'Project Number' | $T8 %]</th>
+     <td colspan="3">
+            [%- INCLUDE 'generic/multibox.html'
+                 name          =  vclimit < ALL_PROJECTS.size ? 'projectnumber' : 'project_id',
+                 style         = "width: 250px",
+                 DATA          =  ALL_PROJECTS,
+                 id_key        = 'id',
+                 label_key     = 'projectnumber',
+                 limit         = vclimit,
+                 show_empty    = 1,
+                 allow_textbox = 1,
+            -%]
+     </td>
+    </tr>
+    [%- UNLESS ALL_BUSINESS_TYPES.size == 0 %]
+    <tr>
+     <th align="right" nowrap>[% vctypelabel %]</th>
+     <td colspan="3">
+      [% L.select_tag('business_id', ALL_BUSINESS_TYPES, title_key = 'description', with_empty = 1, style='width:250px') %]
+     </td>
+    </tr>
+    [%- END %]
+    <tr>
+     <th align="right">[% IF is_order %][% 'Order Date' | $T8 %][% ELSE %][% 'Quotation Date' | $T8 %][% END %] [% 'From' | $T8 %]</th>
+     <td>
+       [% L.date_tag('transdatefrom') %]
+     </td>
+     <th align="right">[% 'Bis' | $T8 %]</th>
+     <td>
+      [% L.date_tag('transdateto') %]
+     </td>
+    </tr>
+    <tr>
+     <th align="right">[% IF is_order %][% 'Delivery Date' | $T8 %][% ELSE %][% 'Valid until' | $T8 %][% END %] [% 'From' | $T8 %]</th>
+     <td>
+       [% L.date_tag('reqdatefrom') %]
+     </td>
+     <th align="right">[% 'Bis' | $T8 %]</th>
+     <td>
+       [% L.date_tag('reqdateto') %]
+     </td>
+    </tr>
+    <tr>
+     <th align="right">[% 'Include in Report' | $T8 %]</th>
+     <td colspan="5">
+      <table>
+       <tr>
+        <td>
+         <input type="checkbox" name="open" value="1" id="open" checked>
+         <label for="open">[% 'Open' | $T8 %]</label>
+        </td>
+        <td>
+         <input type="checkbox" name="closed" value="1" id="closed">
+         <label for="closed">[% 'Closed' | $T8 %]</label>
+        </td>
+       </tr>
+[%- IF type == 'sales_order' OR type == 'purchase_order' %]
+       <tr>
+        <td>
+         <input name="notdelivered" id="notdelivered" class="checkbox" type="checkbox" value="1" checked>
+         <label for="notdelivered">[% 'Not delivered' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="delivered" id="delivered" class="checkbox" type="checkbox" value="1" checked>
+         <label for="delivered">[% 'Delivery Order created' | $T8 %]</label>
+        </td>
+       </tr>
+[%- END %]
+[%- IF type == 'sales_order' %]
+       <tr>
+        <td>
+         [% L.checkbox_tag("periodic_invoices_active", label => LxERP.t8("Periodic invoices active")) %]
+        </td>
+        <td>
+         [% L.checkbox_tag("periodic_invoices_inactive", label => LxERP.t8("Periodic invoices inactive")) %]
+        </td>
+       </tr>
+[%- END %]
+       <tr>
+        <td>
+         <input name="l_id" id="l_id" class="checkbox" type="checkbox" value="Y">
+         <label for="l_id">[% 'ID' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_[% HTML.escape(ordnrname) %]" id="l_[% HTML.escape(ordnrname) %]" class="checkbox" type="checkbox" value="Y" checked>
+         <label for="l_[% HTML.escape(ordnrname) %]">[% HTML.escape(ordlabel) %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_transdate" id="l_transdate" class="checkbox" type="checkbox" value="Y" checked>
+         <label for="l_transdate">[% 'Date' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_reqdate" id="l_reqdate" class="checkbox" type="checkbox" value="Y" checked>
+         <label for="l_reqdate">[% IF is_order %][% 'Required by' | $T8 %][% ELSE %][% 'Valid until' | $T8 %][% END %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_name" id="l_name" class="checkbox" type="checkbox" value="Y" checked>
+         <label for="l_name">[% HTML.escape(vclabel) %]
+        </td>
+        <td>
+         <input name="l_employee" id="l_employee" class="checkbox" type="checkbox" value="Y" checked>
+         <label for="l_employee">[% 'Employee' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_shipvia" id="l_shipvia" class="checkbox" type="checkbox" value="Y">
+         <label for="l_shipvia">[% 'Ship via' | $T8 %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_customernumber" id="l_customernumber" class="checkbox" type="checkbox" value="Y">
+         <label for="l_customernumber">[% 'Customer Number' | $T8 %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_netamount" id="l_netamount" class="checkbox" type="checkbox" value="Y">
+         <label for="l_netamount">[% 'Amount' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_tax" id="l_tax" class="checkbox" type="checkbox" value="Y">
+         <label for="l_tax">[% 'Tax' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_amount" id="l_amount" class="checkbox" type="checkbox" value="Y" checked>
+         <label for="l_amount">[% 'Total' | $T8 %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_marge_total" id="l_marge_total" class="checkbox" type="checkbox" value="Y">
+         <label for="l_marge_total">[% 'Ertrag' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_marge_percent" id="l_marge_percent" class="checkbox" type="checkbox" value="Y">
+         <label for="l_marge_percent">[% 'Ertrag prozentual' | $T8 %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_globalprojectnumber" id="l_globalprojectnumber" class="checkbox" type="checkbox" value="Y">
+         <label for="l_globalprojectnumber">[% 'Project Number' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_transaction_description" id="l_transaction_description" class="checkbox" type="checkbox" value="Y">
+         <label for="l_transaction_description">[% 'Transaction description' | $T8 %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_subtotal" id="l_subtotal" class="checkbox" type="checkbox" value="Y">
+         <label for="l_subtotal">[% 'Subtotal' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_salesman" id="l_salesman" class="checkbox" type="checkbox" value="Y">
+         <label for="l_salesman">[% 'Salesman' | $T8 %]</label>
+        </td>
+       </tr>
+       <tr>
+        <td colspan=4 align=left><b>[% HTML.escape(vclabel) %]</td>
+       </tr>
+       <tr>
+        <td>
+         <input name="l_vcnumber" id="l_vcnumber" class="checkbox" type="checkbox" value="Y">
+         <label for="l_vcnumber">[% HTML.escape(vcnumberlabel) %]</label>
+        </td>
+        <td>
+         <input name="l_country" id="l_country" class="checkbox" type="checkbox" value="Y">
+         <label for="l_country">[% 'Country' | $T8 %]</label>
+        </td>
+        <td>
+         <input name="l_ustid"  id="l_ustid" class="checkbox" type="checkbox" value="Y">
+         <label for="l_ustid">[% 'USt-IdNr.' | $T8 %]</label>
+        </td>
+       </tr>
+[%- IF type == 'sales_order' %]
+       <tr><td colspan="3"><hr></td></tr>
+[%- END %]
+      </table>
+     </td>
+    </tr>
+   </table>
+  </td>
+ </tr>
+</table>
+
+<br>
+<input type="hidden" name="nextsub" value="orders">
+<input type="hidden" name="vc" value="[% HTML.escape(vc) %]">
+<input type="hidden" name="type" value="[% HTML.escape(type) %]">
+<input class="submit" type="submit" name="action" value="[% 'Continue' | $T8 %]">
+</form>

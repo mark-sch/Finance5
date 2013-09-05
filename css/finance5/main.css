@@ -1,0 +1,535 @@
+/* Stylesheet for Finance5
+ * Name: finance5.css*/
+
+/* The look of links */
+A:link { color: mediumblue; text-decoration: none; }
+A:visited { color: mediumblue; text-decoration: none; }
+A:active { color: black; text-decoration: none; }
+A:hover { color: black;
+           background-color: lemonchiffon;
+           text-decoration: none;
+         }
+
+input:focus, textarea:focus, select:focus, input:hover {
+  background-color: yellow;
+}
+input:hover, select:focus {
+  cursor:pointer;
+}
+
+body {
+        color: #686868;
+        font: 12px Arial;
+        margin: 0;
+        padding: 0;
+}
+
+#logo {
+    position: absolute;
+    background: url("../../f5-images/f5-logo.png") no-repeat;
+    height: 47px;
+    top: 4px;
+    left: 15px;
+    padding-left:54px;
+    padding-top:8px;
+    font-family: Chevin-DemiBold;
+    font-weight: 500;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#chatstatus {
+    width: 100%;
+    position: absolute;
+    top:4px;
+    z-index:-1;
+}
+
+#chatstatus div {
+   float:right;
+   padding-right:15px;
+}
+
+#menu {
+    top: 17px;
+    margin-left: 220px;
+    position:absolute;
+}
+
+#menu ul:last-of-type h2 {
+        border-right:0px;
+}
+
+#menu-status {
+    top: 63px;
+    position:absolute;
+    color:#686868; font-family:verdana,arial,sans-serif; font-size: 12px;
+    width:100%;
+    text-align:right;
+}
+
+#page {
+    background: url("../../f5-images/page-bg.png") repeat-y scroll center top #F0F0F0;
+    clear: both;
+    margin: 0 auto;
+    padding: 0 0 20px 0;
+    width: 1138px;
+    min-height:650px;
+    margin-top: 110px;
+}
+
+#content {
+    top: 7px;
+    left: 18px;
+    width: 1098px;
+    position: relative; 
+    border: 0px none; 
+    z-index: 99; 
+    min-height: 550px; 
+}
+
+
+#footer {
+    background: url("../../f5-images/footer-bg.png") repeat-x scroll left top #F6F6F6;
+    clear: both;
+    color: #666666;
+    height: 166px;
+    line-height: 19px;
+    margin: 0 auto;
+    padding: 0;
+    width: 1138px;
+    margin-bottom: 20px;
+}
+
+#footer-left {
+    float: left;
+    margin: 63px 0 0 40px;
+}
+
+
+#footer-right {
+    background: url("../../f5-images/follow-me.png") no-repeat scroll left 26px transparent;
+    float: right;
+    margin-top: 56px;
+    padding: 5px 0 0 122px;
+    width: 365px;
+}
+
+#container-navigation {
+        width: 1136px;
+        height: 50px;
+        margin: 0;
+        padding: 0;
+        left: 1px;
+        top: -2px;
+        background: url(../../f5-images/container-navigation-bg.jpg) no-repeat left top;
+        position: relative;
+}
+
+#container-navigation ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+}
+
+#container-navigation ul li {
+        display: inline;
+        margin: 0px;
+}
+
+#container-navigation ul li:last-of-type a {
+        background:url('');
+}
+
+#container-navigation ul li a {
+        height:33px;
+        display: block;
+        float: left;
+        padding: 17px 15px 0 15px;
+        font: bold 12px Arial;
+        color: #FFF;
+        text-decoration: none;
+        background: url(../../f5-images/container-navigation-separator.png) no-repeat right center;
+}
+
+#container-navigation ul li a:hover {
+        color:#134264;
+        background: url(../../f5-images/container-navigation-hover.png) repeat-x left top;
+}
+
+#container-navigation ul li#active a {
+        color:#134264;
+        background: url(../../f5-images/container-navigation-hover.png) repeat-x left top;
+}
+
+input, select {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.frame-header-right input {
+  border: 1px solid lightblue;
+  height: 16px;
+}
+
+
+td {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: black;
+  font-size: 12px;
+  font-weight: normal;
+}
+td.hover:hover {
+    color: black;
+}
+
+
+th {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: black;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* login and admin */
+.login {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+body.login {
+  background: #fff;
+  color: #A0A0A0;
+}
+h1.login {
+  font-size: 18pt;
+}
+table.login {
+  background-color: #f7f7f7;
+  padding: 5px;
+  margin-top: 30px;
+  width: 700px;
+}
+td.login {
+  text-align: center;
+}
+th.login {
+  text-align: right;
+}
+
+body.admin {
+  background-color:#ffffff;
+  color: black;
+}
+
+.message_error_login {
+    color: #000000;
+    border: 1px solid #8b0000;
+    background-color: #ffcccc;
+    padding: 3px;
+}
+.message_ok {
+    font-size: 12pt;
+    padding:5px;
+    background-color: #ADFFB6;
+    color: black;
+    font-weight: bolder;
+    text-align:center;
+    border-style:solid;
+    border-width:thin;
+}
+.message_error {
+    font-size: 12pt;
+    padding:5px;
+    background-color: #FFAAAA;
+    color: black;
+    font-weight: bolder;
+    text-align:center;
+    border-style:solid;
+    border-width:thin;
+}
+.message_hint {
+    font-size: 12pt;
+    padding:5px;
+    background-color: #FFFE66;
+    color: black;
+    font-weight: bolder;
+    text-align:center;
+    border-style:solid;
+    border-width:thin;
+}
+.message_error_label {
+    font-size: 0.8em;
+    padding:5px;
+    background-color: #FEE;
+    font-weight:normal;
+    text-align:left;
+    border-style:solid;
+    border-width:thin;
+}
+
+/*
+    Überschriftsbalken
+*/
+.listtop, h1 {
+    background-color: rgb(236,233,216);
+    text-align:left;
+    padding:5px;
+    font-size: 10pt;
+    color: black;
+    font-weight: bolder;
+    border-style:dashed;
+    border-width:thin;
+}
+
+
+.listelement {
+    background-image: url("../../image/fade2.png");
+    background-repeat:repeat-x;
+    border-style:dashed;
+    border-width:thin;
+}
+
+.listelement2 {
+    background-image: url("../../image/fade2.png");
+    background-repeat:repeat-x;
+    border-style:dashed;
+    border-width:thin;
+}
+
+.listheading, .listheading th {
+    font-size: 9pt;
+    padding:3px;
+    background-color:
+    rgb(236,233,216);
+    color: black;
+    font-weight: bolder;
+    text-align:left;
+    background-image: url("../../image/fade.png");
+    border-style:dotted;
+    border-width:thin;
+}
+
+.listheadingcontent {
+    font-size: 9pt;
+    background-color:
+    rgb(236,233,216);
+    color: black;
+    font-weight: bolder;
+    text-align:left;
+}
+
+.accountlistheading {
+    font-size: 10pt;
+    padding:3px;
+    color: white;
+    font-weight: bold;
+    text-align:left;
+    background-color:rgb(133,132,129);
+}
+
+.subsubheading {
+  color: black;
+  font-weight: bolder;
+  text-decoration: underline;
+}
+
+.optionen {
+    border:dashed;
+/*  padding-top:10px;
+    padding-bottom:10px;
+    padding-left:10px;
+*/
+    border-width:1px;
+    background:#efedde;
+}
+
+
+.listrow1 { background-color: rgb(208,207,201); color: black; vertical-align: top; }
+.listrow0 { background-color: rgb(236,233,216); color: black; vertical-align: top; }
+tr[id*='row2.'] {display:none; }
+.invcol a { display:block; width: 100%; }
+.invcol a:hover { background-color: yellow; }
+
+.redrow1 { background-color: rgb(250,167, 161); color: black; vertical-align: top; }
+.redrow0 { background-color: rgb(255,193,176); color: black; vertical-align: top; }
+
+.greenrow1 { background-color: rgb(0,250,0); color: black; vertical-align: top; }
+.greenrow0 { background-color: rgb(0,255,0); color: black; vertical-align: top; }
+
+.listsubtotal { font-size: 12px; background-color: rgb(236,233,216); color: black; font-weight: bolder;}
+
+.listtotal, .listtotal td { font-size: 12px; background-color: rgb(236,233,216); color: black; font-weight: bolder;}
+
+/* Verkaufsbericht */
+.listmainsortheader { font-size: 12px; background-color: rgb(236,233,216); color: red; font-weight: bolder; padding-left: 10px; padding-top: 0px;}
+.listmainsortsubtotal { font-size: 12px; background-color: rgb(236,233,216); color: red; font-weight: bolder; padding-left: 10px;}
+.listsubsortheader { font-size: 12px; background-color: rgb(236,233,216); color: green; font-weight: bolder; padding-left: 20px}
+.listsubsortsubtotal { font-size: 12px; background-color: rgb(236,233,216); color: green; font-weight: bolder; padding-left: 20px}
+.listsortdescription { font-size: 12px; background-color: rgb(236,233,216); color: black; font-weight: normal; padding-left: 30px}
+
+
+.submit {
+  font-family: sans-serif;
+  color: #000000;
+  font-size: 17px;
+}
+.checkbox, .radio {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #778899;
+}
+
+.plus0 {    /* font color for negative numbers */
+  color: red;
+}
+
+.plus1 {
+  color: green;
+}
+
+td.numeric { /* class for numeric columns in tables */
+  text-align: right
+}
+
+h2.confirm {
+  color: blue;
+  font-size: 14pt;
+}
+
+h2.error {
+  color: red;
+  font-size: 14pt;
+}
+
+fieldset {
+  margin-top:15px;
+  color: black;
+  font-weight: bolder;
+}
+
+/* media stuff */
+
+@media screen {
+  .noscreen {   /* items with this class won't display */
+    display: none;
+  }
+}
+
+@media print {
+  .noprint {   /* items with this class won't print */
+    display: none;
+  }
+}
+
+.filecontent {
+  border: 1px solid blue;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+label {
+  cursor:pointer;
+}
+
+.unbalanced_ledger {
+  background-color: #ffa0a0;
+}
+
+.clearfix:after {
+  clear:both;
+  content:".";
+  display:block;
+  font-size:0;
+  height:0;
+  visibility:hidden;
+}
+
+.flash_message_error {
+  background-color:#FFD6D6;
+  border: 1px solid #AE0014;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.flash_message_warning {
+  background-color:#FFE8C7;
+  border: 1px solid #FF6600;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.flash_message_info {
+  background-color:#DCF2FF;
+  border: 1px solid #4690FF;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.jqmWindow {
+  display: none;
+
+  position: fixed;
+  top: 17%;
+  left: 40%;
+
+  margin-left: -200px;
+  width: 700px;
+
+  background-color: lemonchiffon;
+  color: #333;
+  border: 1px solid black;
+  padding: 4px;
+}
+
+.jqmContent {
+  padding: 8px;
+}
+
+.jqmWindow h1 {
+  border: 0;
+  padding: 0;
+  background-color: lemonchiffon;
+}
+
+.jqmOverlay {
+  background-color: #000;
+}
+
+/* Kontenliste Styles */
+
+.coa_listrow1 {
+  background-color: rgb(208,207,201);
+  color: black;
+  vertical-align: top;
+}
+
+.coa_listrow0 {
+  background-color: rgb(236,233,216);
+  color: black;
+  vertical-align: top;
+}
+
+.coa_detail_emph {
+  font-size:10pt;
+  font-weight:bold;
+  color:darkred;
+}
+
+.coa_details_header {
+  font-size:8pt;
+  padding:3px;
+  font-weight:bolder;
+  text-align:center;
+  border-style:none;
+  border-width:thin;
+}
+
+.coa_details_header2 {
+  font-size:8pt;
+  padding:3px;
+  font-weight:normal;
+  text-align:left;
+  border-style:none;
+  border-width:thin;
+}
