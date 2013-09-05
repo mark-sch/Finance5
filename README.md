@@ -11,7 +11,7 @@ Open Source Faktura, Fibu, Warenwirtschaft und mehr.
 
 ========
 
-Finance5
-Contribution (C) 2013 Mark Schmalohr, Think5 GmbH
-GNU GPL v2 Open Source
+Finance5, 
+contribution (C) 2013 Mark Schmalohr, Think5 GmbH, 
+GNU GPL v2 Open Source, 
 Based on sql-ledger & kivitendo
