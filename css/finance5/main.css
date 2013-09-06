@@ -73,7 +73,7 @@ body {
     clear: both;
     margin: 0 auto;
     padding: 0 0 20px 0;
-    width: 1138px;
+    width: 1238px;
     min-height:650px;
     margin-top: 110px;
 }
@@ -81,7 +81,7 @@ body {
 #content {
     top: 7px;
     left: 18px;
-    width: 1098px;
+    width: 1198px;
     position: relative; 
     border: 0px none; 
     z-index: 99; 
@@ -97,7 +97,7 @@ body {
     line-height: 19px;
     margin: 0 auto;
     padding: 0;
-    width: 1138px;
+    width: 1238px;
     margin-bottom: 20px;
 }
 
@@ -116,7 +116,7 @@ body {
 }
 
 #container-navigation {
-        width: 1136px;
+        width: 1236px;
         height: 50px;
         margin: 0;
         padding: 0;
