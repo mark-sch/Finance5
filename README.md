@@ -1,7 +1,7 @@
 Finance5 - Kaufmännische Softwarelösungen
 ========
 
-Open Source Faktura, Fibu, Warenwirtschaft und mehr. Intuitive Benutzeroberfläche auf Basis der sql-ledger / kivitendo ERP Software. 
+Open Source Faktura, Fibu, Warenwirtschaft und mehr. Intuitive Benutzeroberfläche, mit ERP Software-Basis sql-ledger / kivitendo. 
 
 - Kunden anlegen
 - Waren verwalten
