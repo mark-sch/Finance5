@@ -954,6 +954,10 @@ sub generate_report {
     $report->add_data($row);
   }
 
+  my $raw_bottom_info_text .= $form->parse_html_template('wh/generate_report_bottom');
+
+  $report->set_options('raw_bottom_info_text' => $raw_bottom_info_text);
+
   $report->generate_with_headers();
 
   $main::lxdebug->leave_sub();

@@ -266,7 +266,7 @@ sub _dispatch {
     $self->$sub(@_);
     $self->_run_hooks('after', $action);
   } else {
-    $::form->error($::locale->text('Oops. No valid action found to dispatch. Please report this case to the kivitendo team.'));
+    $::form->error($::locale->text('Oops. No valid action found to dispatch. Please report this case to the Finance5 team.'));
   }
 }
 

@@ -155,8 +155,9 @@ sub start_content {
   "        <ul>\n" .
   "        <li><a href='ct.pl?action=Weiter&db=customer&nextsub=list_names&l_city=Y&l_contact=Y&l_customernumber=Y&l_email=Y&l_name=Y&l_phone=Y&l_street=Y&l_zipcode=Y&obsolete=N&status=all'>Kunden</a></li>\n" .
   "        <li><a href='ic.pl?searchitems=part&title=Waren&revers=0&lastsort=&nextsub=generate_report&sort=description&ndxs_counter=0&partnumber=&ean=&description=&partsgroup_id=&serialnumber=&make=&model=&drawing=&microfiche=&itemstatus=active&transdatefrom=&transdateto=&l_partnumber=Y&l_description=Y&l_unit=Y&l_sellprice=Y&l_lastcost=Y&l_linetotal=Y&action=Weiter'>Waren</a></li>\n" .
+  "        <li><a href='wh.pl?action=generate_report&l_warehousedescription=Y&l_bindescription=Y&l_partnumber=Y&l_partdescription=Y&l_chargenumber=Y&l_qty=Y&l_stock_value=Y&qty_op=dontcare&qty_unit=Stck&l_warehousedescription=Y&l_bindescription=Y&sort=partnumber&order=0'>Lager</a></li>\n" .
   "        <li><a href='ar.pl?action=Weiter&nextsub=ar_transactions&open=1&closed=1&l_amount=Y&l_invnumber=Y&l_name=Y&l_netamount=Y&l_paid=Y&l_transdate=Y&sort=transdate'>Rechnungen</a></li>\n" .
-  "        <li><a href='gl.pl?action=Weiter&category=X&datesort=gldate&nextsub=generate_report&l_accno=Y&l_credit=Y&l_debit=Y&l_description=Y&l_gldate=Y&l_reference=Y&l_source=Y&l_transdate=Y&sort=transdate&sortdir=0'>Buchungen</a></li>\n" .
+  "        <li><a href='gl.pl?action=generate_report&datesort=gldate&category=X&l_gldate=Y&l_transdate=Y&l_reference=Y&l_description=Y&l_debit=Y&l_credit=Y&sort=transdate&sortdir=0'>Buchungen</a></li>\n" .
   "        <li><a href='fu.pl?nextsub=report&created_for=&subject=&body=&reference=&follow_up_date_from=&follow_up_date_to=&itime_from=&itime_to=&all_users=1&not_done=1&action=Weiter'>Erinnerungen</a></li>\n" .
   "        </ul>\n" .
   "  </div>\n" .
