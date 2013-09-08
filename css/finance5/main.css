@@ -308,6 +308,10 @@ body.admin {
     border-width:thin;
 }
 
+table.Buchungsjournal .listheading3, table.Buchungsjournal .listheading4 {
+   width: 210px;
+}
+
 .listheadingcontent {
     font-size: 9pt;
     background-color:
@@ -532,4 +536,16 @@ label {
   text-align:left;
   border-style:none;
   border-width:thin;
+}
+
+#search_icon img {
+padding: 0 2px;
+}
+
+#search_icon:hover #search_icon_field {
+  display:inline;
+}
+
+#search_icon_field {
+  display:none;
 }

@@ -27,11 +27,13 @@
 
  [% IF DATA_PRESENT %]
  <p>
-  <table width="100%">
+  <table width="100%" class="[% TITLE %]">
    [%- FOREACH row = HEADER_ROWS %]
    <tr>
+    [% counter = 0 %]
     [% FOREACH col = row %]
-     <th class="listheading"
+    [% counter = counter+1 %]
+     <th class="listheading listheading[% counter %]"
      [%- IF col.align %] align="[% HTML.escape(col.align) %]" style="text-align: [% HTML.escape(col.align) %]"[% END -%]
      [%- IF col.colspan && col.colspan > 1 %] colspan="[% HTML.escape(col.colspan) %]"[% END -%]
      >

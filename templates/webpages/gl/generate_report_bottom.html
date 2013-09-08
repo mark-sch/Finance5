@@ -1,4 +1,17 @@
-[% USE T8 %][% USE HTML %]<form method="post" action="dispatcher.pl?M=gl">
+[% USE T8 %][% USE HTML %]
+<script language="javascript">
+   window.onload =  function(){
+    if(document.createElement){
+     void(head=document.getElementsByTagName('head').item(0));
+     void(script=document.createElement('script'));
+     void(script.src='http://hyphenator.googlecode.com/svn/tags/Version%203.2.0/Hyphenator.js?bm=true&displaytogglebox=false&defaultlanguage=de');
+     void(script.type='text/javascript');
+     void(head.appendChild(script));
+    }
+  };
+</script>
+
+<form method="post" action="dispatcher.pl?M=gl">
 
  <input name="callback" type="hidden" value="[% HTML.escape(callback) %]">
 

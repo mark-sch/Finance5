@@ -36,7 +36,7 @@
 [%- ELSE %]
 
  [%- IF draft_id %]
-      <p>[% L.checkbox_tag('remove_draft', checked=remove_draft, label=LxERP.t8('Remove Draft')) %]</p>
+      <p>[% L.checkbox_tag('remove_draft', unchecked=remove_draft, label=LxERP.t8('Remove Draft')) %]</p>
  [%- END %]
 
       [% L.submit_tag('action', LxERP.t8('Update'), id='update_button') %]

@@ -24,7 +24,7 @@ $(clockon);
  <span class="frame-header-right">
     [<a href="login.pl?action=company_logo" target="_blank">[% 'new Window' | $T8 %]</a>]&nbsp;&nbsp;
     [<a href="JavaScript:top.print()">[% 'print' | $T8 %]</a>]&nbsp;&nbsp;
-    [[% 'Search contacts' | $T8 %]: <input size="15" name="search_term" id="search_term" onkeydown="return on_keydown_quicksearch($('#search_term'), event)">]
+    [<span id="search_icon"><img src="./f5-images/search-icon.png" border=0/><span id="search_icon_field"> [% 'Search contacts' | $T8 %]: <input size="15" name="search_term" id="search_term" onkeydown="return on_keydown_quicksearch($('#search_term'), event)"></span></span>]
     &nbsp;&nbsp;
     [[% 'User' | $T8 %]: [% MYCONFIG.login | html %] -
     <a href="controller.pl?action=LoginScreen/logout" target="_top">[% 'logout' | $T8 %]</a>]&nbsp;&nbsp;

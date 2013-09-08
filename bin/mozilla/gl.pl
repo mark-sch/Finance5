@@ -209,6 +209,9 @@ sub edit {
   $main::lxdebug->leave_sub();
 }
 
+sub wiedervorlage {
+  edit();
+}
 
 sub search {
   $::lxdebug->enter_sub;
