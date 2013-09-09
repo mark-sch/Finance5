@@ -1,0 +1,8 @@
+[% USE T8 %][% USE HTML %]<form>
+
+ <input class="submit" type="button" name="Ware-Einlagern" onclick="location.href='controller.pl?action=Inventory%2fstock_in&level=Warehouse--Stock';" value="Ware einlagern">
+ <input class="submit" type="button" name="Erzeugnis-Einlagern" onclick="location.href='wh.pl?action=transfer_warehouse_selection&level=Warehouse--Produce%2520Assembly&trans_type=assembly';" value="Erzeugnis einlagern">
+ <input class="submit" type="button" name="Umlagern" onclick="location.href='wh.pl?action=transfer_warehouse_selection&level=Warehouse--Transfer&trans_type=transfer';" value="Umlagern">
+ <input class="submit" type="button" name="Entnahme" onclick="location.href='wh.pl?action=transfer_warehouse_selection&level=Warehouse--Removal&trans_type=removal';" value="Entnahme">
+
+</form>
