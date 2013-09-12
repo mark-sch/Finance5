@@ -758,10 +758,12 @@ sub trial_balance {
         $trb{ $ref->{accno} }{charttype}   = 'A';
         $trb{ $ref->{accno} }{beginning_balance} = $ref->{amount};
 
-        if ($ref->{amount} > 0) {
-          $trb{ $ref->{accno} }{haben_eb}   = $ref->{amount};
-        } else {
+        # Nur auf Aktivkonten anwenden, da Passivkonten sonst mit
+        # Vorzeichenwechsel auf Aktiv stehen -> falsche Bilanzsumme
+        if ($ref->{amount} < 0 && $ref->{category} eq "A") {
           $trb{ $ref->{accno} }{soll_eb}   = $ref->{amount} * -1;
+        } else {
+          $trb{ $ref->{accno} }{haben_eb}   = $ref->{amount};
         }
         $trb{ $ref->{accno} }{category}    = $ref->{category};
       }
