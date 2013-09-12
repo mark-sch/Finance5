@@ -47,3 +47,13 @@
 [%- END %]
   </form>
 </td></tr></table>
+
+<script language="javascript">
+   $( document ).ready(function() {
+     var i = 1;
+     $("select[id*=accno_]").each(function() {
+        updateTaxes(i);
+        i++;
+     });
+   });
+</script>
