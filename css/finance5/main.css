@@ -549,3 +549,12 @@ padding: 0 2px;
 #search_icon_field {
   display:none;
 }
+
+.Buchungsjournal tr:nth-child(n+13) {
+  display:none;
+}
+
+#gl_showhide_items {
+  color: blue;
+  font-size: 10pt;
+}

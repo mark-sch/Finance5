@@ -1,16 +1,34 @@
 [% USE T8 %][% USE HTML %]
+
 <script language="javascript">
-   window.onload =  function(){
+   $( document ).ready(function() {
     if(document.createElement){
-     void(head=document.getElementsByTagName('head').item(0));
-     void(script=document.createElement('script'));
-     void(script.src='http://hyphenator.googlecode.com/svn/tags/Version%203.2.0/Hyphenator.js?bm=true&displaytogglebox=false&defaultlanguage=de');
-     void(script.type='text/javascript');
-     void(head.appendChild(script));
+     head=document.getElementsByTagName('head').item(0);
+     script=document.createElement('script');
+     script.src='http://hyphenator.googlecode.com/svn/tags/Version%203.2.0/Hyphenator.js?bm=true&displaytogglebox=false&defaultlanguage=de';
+     script.type='text/javascript';
+     head.appendChild(script);
     }
-  };
+    
+    var gl_allrows = false;
+    $('#gl_showhide_items').click(function () { 
+      var i = 1;
+      $(".Buchungsjournal tr").each(function() {
+        if (gl_allrows == true && i > 12) {
+          $(this).hide();
+        }
+        else {
+          $(this).show();
+        }
+        i++;
+      });
+      if (gl_allrows == true) gl_allrows = false; else gl_allrows = true;
+    });
+  });
 </script>
 
+<center><a id="gl_showhide_items">Alle anzeigen/weniger anzeigen</a></center>
+<br/>
 <form method="post" action="dispatcher.pl?M=gl">
 
  <input name="callback" type="hidden" value="[% HTML.escape(callback) %]">

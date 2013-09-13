@@ -169,8 +169,8 @@ sub end_content {
   "</div>\n" .
   "<div id='footer'>\n" .
   "<div id='footer-left'>\n" .
-  "  &copy; 2013 <a href='http://www.think5.de'>Think5 GmbH</a><br>\n" .
-  "  <a href='http://www.gnu.org/licenses/gpl-2.0.html' target='new'>GNU GPL Open Source</a> | <a href='http://github.com/mark-sch/Finance5'>Fork me on GitHub</a>\n" .
+  "  &copy; 2013 <a href='http://www.think5.de' target='_new'>Think5 GmbH</a><br>\n" .
+  "  <a href='http://www.gnu.org/licenses/gpl-2.0.html' target='new'>GNU GPL Open Source</a> | <a href='http://github.com/mark-sch/Finance5' target='new'>Fork me on GitHub</a>\n" .
   "</div>\n".
   "<div id='footer-right'>\n" .
   "<a target='_blank' href='http://www.facebook.com/myFinance5'><img width='73' height='73' style='margin-left:10px;' src='f5-images/facebook.png'></a>\n" .
