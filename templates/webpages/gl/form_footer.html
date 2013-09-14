@@ -18,7 +18,7 @@
   <p>[% LxERP.t8('There are #1 unfinished follow-ups of which #2 are due.', follow_ups.size , follow_ups_due) %]</p>
 [%- END %]
 
-<br>
+<br/>
 
 [%- IF id %]
   [% L.submit_tag('action', LxERP.t8('Update'), id='update_button') %]
@@ -47,6 +47,10 @@
 [%- END %]
   </form>
 </td></tr></table>
+
+<p>
+   &nbsp;&nbsp;<a href="javascript:document.location.href='gl.pl?action=add'">Entw&uuml;rfe</a>
+</p>
 
 <script language="javascript">
    $( document ).ready(function() {
