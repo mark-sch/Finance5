@@ -674,7 +674,7 @@ sub ustva {
       dec_places  => '2',
   });
 
-  push @category_cent, qw(83  Z43  Z45  Z53  Z62  Z65  Z67);
+  push @category_cent, qw(83  Z43  Z45  Z53  Z54  Z62  Z65  Z67);
 
   my @category_euro = USTVA->report_variables({
       myconfig    => $myconfig,
@@ -761,6 +761,9 @@ sub ustva {
 
   $form->{"Z53"} = $form->{"Z45"}     + $form->{"53"}  + $form->{"74"}
                      + $form->{"85"}  + $form->{"65"};
+
+  $form->{"Z54"} = $form->{"Z45"}  + $form->{"47"}    + $form->{"53"}  + $form->{"74"}
+                    + $form->{"79"}   + $form->{"85"}  + $form->{"65"};
 
   $form->{"Z62"} = $form->{"Z43"}     - $form->{"66"}  - $form->{"61"}
                      - $form->{"62"}  - $form->{"67"}  - $form->{"63"}

@@ -782,7 +782,7 @@ sub generate_ustva {
         dec_places  => '2',
     });
 
-    push @category_cent, qw(Z43  Z45  Z53  Z62  Z65  Z67);
+    push @category_cent, qw(Z43  Z45  Z53  Z54  Z62  Z65  Z67);
 
     my @category_euro = $ustva->report_variables({
         myconfig    => \%myconfig,
@@ -984,6 +984,7 @@ sub generate_ustva {
           '891'  =>  'Kz89-calc',
           'Z45'  =>  'uebertrag',
           'Z53'  =>  'ust-sum',
+          'Z54'  =>  'ust-sum',
           'Z62'  =>  'ust-minus-vost',
           'Z65'  =>  'ust-sum+69',
           'Z67'  =>  'ust-vz',
