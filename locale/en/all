@@ -705,6 +705,7 @@ $self->{texts} = {
   'EK'                          => '',
   'ELSE'                        => '',
   'ELSTER Export (Taxbird)'     => '',
+  'ELSTER Export (ElsterCloud)' => '',
   'ELSTER Export (Winston)'     => '',
   'ELSTER Export nach Winston'  => '',
   'ELSTER Tax Number'           => '',

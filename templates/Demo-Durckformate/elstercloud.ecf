@@ -1,0 +1,26 @@
+# This file was produced by Finance5
+# for data transfer with ElsterCloud. 
+
+#
+# Adresse des Steuerpflichtigen
+#
+name = <%company%>
+strasse = <%co_street%>
+plz = <%co_zip%>
+ort = <%co_city%>
+telefon = <%co_phone_prefix%><%co_phone%>
+
+land = <%ec_land_nr%>
+
+steuernummer = <%steuernummer%>
+
+jahr = <%year%>
+
+zeitraum = <%period%>
+
+kz10 = <%FA_10%>
+
+<%foreach id%>
+<%id%> = <%amount%>
+<%end%>
+

@@ -34,6 +34,8 @@ sub get_mime_type() {
     return "application/xml ";
   } elsif ($self->{"form"}->{"format"} =~ /elstertaxbird/i) {
     return "application/x-taxbird";
+  } elsif ($self->{"form"}->{"format"} =~ /elstercloud/i) {
+    return "application/x-elstercloud";
   } else {
     return "text";
   }

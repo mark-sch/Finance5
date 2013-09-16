@@ -998,7 +998,7 @@ sub parse_template {
     $template_type  = 'XML';
     $ext_for_format = 'xml';
 
-  } elsif ( $self->{"format"} =~ /elster(?:winston|taxbird)/i ) {
+  } elsif ( $self->{"format"} =~ /elster(?:winston|taxbird|cloud)/i ) {
     $template_type = 'XML';
 
   } elsif ( $self->{"format"} =~ /excel/i ) {

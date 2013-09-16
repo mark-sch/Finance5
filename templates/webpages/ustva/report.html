@@ -115,15 +115,14 @@
               <br>
               <!-- Mailto alles Maskieren! -->
               <a href="mailto:[% HTML.escape(FA_Email) %]
-                ?subject=&quot;[% HTML.escape(steuernummer) %]:&quot;
-                &amp;bcc=&quot;[% HTML.escape(email) %]&quot;
-                &amp;body=&quot;Sehr%20geehrte%20Damen%20und%20Herren,
+                ?subject=[% HTML.escape(steuernummer) %]:
+                &amp;body=Sehr%20geehrte%20Damen%20und%20Herren,
                 %0D%0A%0D%0A%0D%0AMit%20freundlichen%20Gr&uuml;&szlig;en
-                %0D%0A%0D%0A[% HTML.escape(signature) %]&quot;">
+                %0D%0A%0D%0A[% HTML.escape(signature) %]">
               [% HTML.escape(FA_Email) %]
               </a>
               <br>
-              <a href="[% FA_Internet %]">
+              <a href="[% FA_Internet %]" target="_new">
               [% HTML.escape(FA_Internet) %]
               </a>
               <br>
@@ -188,7 +187,7 @@
   <tr>
    <td align="left">
      <input type=hidden name=nextsub value=generate_ustva>
-     <input type=submit class=submit name=action value="[% 'Show' | $T8 %]">
+     <input type=submit class=submit name=action value="[% 'Show' | $T8 %]">&nbsp;&nbsp;<a href="http://cloud.think5.de/elster/" target="_blank">&Uuml;bertragung mit ElsterCloud</a>
    </td>
    <td align="right">
 

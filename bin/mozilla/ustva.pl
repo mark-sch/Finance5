@@ -520,6 +520,9 @@ sub show_options {
       . qq|</option>|
       . qq|<option value=elstertaxbird>|
       . $::locale->text('ELSTER Export (Taxbird)')
+      . qq|</option>|
+      . qq|<option value=elstercloud>|
+      . $::locale->text('ELSTER Export (ElsterCloud)')
       . qq|</option>|;
   }
 
@@ -1005,7 +1008,65 @@ sub generate_ustva {
         }
       }
 
-    } elsif ( $form->{format} eq '' ){ # No format error.
+    }
+    elsif ( $form->{format} eq 'elstercloud' ) {
+
+      # Define serveral filenames
+      $form->{IN} = 'elstercloud.ecf';
+
+      $form->{attachment_filename} = "UStVA-" . ($form->{period} * 1) . sprintf("%02d", $form->{year} % 100) . ".ecf";
+
+      $form->{attachment_filename} =~ s|.*/||;
+
+      # heuristics for address splitting
+      # Finance5 holds the entire address in a single field.
+      # ElsterCloud expects it to be splitted into street, zipcode and city
+      if ($form->{co_street} =~ /\n/) {
+        my $new_co_street;
+        for (split /\n/, $form->{co_street}) {
+          if (/(\d{3,5})\s+(\w+)/) {
+            $form->{co_zip}  = $1;
+            $form->{co_city} = $2;
+          } else {
+            $new_co_street .= $_;
+          }
+        }
+        $form->{co_street} = $new_co_street;
+      } else {
+        $form->{co_zip} = $form->{co_city};
+        $form->{co_zip} =~ s/\D//g;
+        $form->{co_city} =~ s/\d//g;
+        $form->{co_city} =~ s/^\s//g;
+      }
+
+      my $tax_office           = first { $_->{name} eq $form->{elsterland} } @{ $ustva->{tax_office_information} };
+      $form->{ec_land_nr} = $tax_office->{ec_nr} if $tax_office;
+
+      ($form->{co_phone_prefix}, $form->{co_phone}) = split("-", $form->{tel});
+      $form->{co_phone_prefix} =~ s/\s//g;
+      $form->{co_phone} =~ s/\s//g;
+
+      my $temp_numberformat = $myconfig{numberformat};
+      $myconfig{numberformat} = '1000,00';
+      foreach my $number (@category_cent) {
+        $form->{$number} = ( $form->{$number} !=0 ) ? $form->format_amount(\%myconfig, $form->{$number}, '2', '') : '';
+      }
+
+      foreach my $number (@category_euro) {
+        $form->{$number} = ( $form->{$number} !=0 ) ? $form->format_amount(\%myconfig, $form->{$number}, '0', '') : '';
+      }
+      # Re-set Numberformat
+      $myconfig{numberformat} = $temp_numberformat;
+
+      for my $kennziffer (@category_cent, @category_euro) {
+        next if ($kennziffer eq 'Z43');
+        if ($form->{$kennziffer} != 0){
+          push(@{ $form->{id}}, "kz$kennziffer");
+          push(@{ $form->{amount}}, $form->{$kennziffer});
+        }
+      }
+    }
+    elsif ( $form->{format} eq '' ){ # No format error.
       $form->header;
       USTVA::error( $locale->text('Application Error. No Format given' ) . "!");
       ::end_of_request();
