@@ -450,7 +450,9 @@ sub generate_report {
     $data .= $sh;
 
     $row->{balance}->{data}        = $data;
-    $row->{projectnumbers}->{data} = join ", ", sort { lc($a) cmp lc($b) } keys %{ $ref->{projectnumbers} };
+    if ($form->{l_credit_tax_accno} eq 'Y') {
+       $row->{projectnumbers}->{data} = join ", ", sort { lc($a) cmp lc($b) } keys %{ $ref->{projectnumbers} };
+    }
 
     map { $row->{$_}->{data} = $ref->{$_} } qw(id reference description notes gldate employee);
 

@@ -16,11 +16,11 @@
 </table>
 <table>
         <tr>
-          <th align=left>[% L.radio_button_tag('reporttype', value='custom', label=LxERP.t8('Customized Report')) %]</th>
+          <th align=left>[% L.radio_button_tag('reporttype', value='custom', label=LxERP.t8('Customized Report'), checked=1) %]</th>
         </tr>
         <tr>
           <th colspan=1>[% 'Year' | $T8 %]</th>
-          <td><input name=year size=11 title="[% 'YYYY' | $T8 %]" value="[% year %]"></td>
+          <td><input name=year size=11 title="[% 'YYYY' | $T8 %]" value="[% year %]" class="initial_focus"></td>
         </tr>
 
         <tr>
@@ -29,7 +29,7 @@
                 <th align=left colspan=3>[% 'Monthly' | $T8 %]</th>
         </tr>
         <tr>
-                <td align=right>[% L.radio_button_tag('duetyp', value=13) %]</td>
+                <td align=right>[% L.radio_button_tag('duetyp', value='13', checked=1) %]</td>
                 <td>[% L.radio_button_tag('duetyp', value='A', label='1. ' _ LxERP.t8('Quarter')) %]</td>
                 <td>[% L.radio_button_tag('duetyp', value='1', label=LxERP.t8('January')) %]</td>
                 <td>[% L.radio_button_tag('duetyp', value='5', label=LxERP.t8('May')) %]</td>
