@@ -296,7 +296,8 @@ else
 											if ($opSet1['OrderStatus'] == "Shipped" ||
 												($opSet1['OrderStatus'] == "Unshipped" && $opSet1['FulfillmentChannel'] == "MFN") ||
 												($opSet1['OrderStatus'] == "Pending payment" && $opSet1['FulfillmentChannel'] == "MFN") ||
-												($opSet1['OrderStatus'] == "Paid" && $opSet1['FulfillmentChannel'] == "MFN"))
+												($opSet1['OrderStatus'] == "Paid" && $opSet1['FulfillmentChannel'] == "MFN") ||
+												($opSet1['OrderStatus'] == "Completed" && $opSet1['SalesChannel'] == $eBayAbteilungsname))
 											{
 												echo "<td>";
 												echo "<input type=\"checkbox\" name=\"importauswahl[]\" value=\"".$opSet1['AmazonOrderId']."\" "."checked=\"checked\"".">";
