@@ -149,15 +149,27 @@ else
 			$output = array();
 			if ($Amazonaktiviert == "checked")
 			{
-				$output = array_merge($output, getAmazonOrders($_POST["fulfillmentchannel"], $_POST["versandstatus"], $_POST["suchdatum"], isset($_POST["erledigtesanzeigen"]), $_POST["bestellungvom"], $_POST["bestellungbis"]));
+				$amazonresult = getAmazonOrders($_POST["fulfillmentchannel"], $_POST["versandstatus"], $_POST["suchdatum"], isset($_POST["erledigtesanzeigen"]), $_POST["bestellungvom"], $_POST["bestellungbis"]);
+				if(count($amazonresult) > 0)
+				{
+					$output = array_merge($output, $amazonresult);
+				}
 			}
 			if ($eBayaktiviert == "checked")
 			{
-				$output = array_merge($output, getEbayOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], $_POST["bestellungbis"]));
+				$ebayresult = getEbayOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], $_POST["bestellungbis"]);
+				if(count($ebayresult) > 0)
+				{
+					$output = array_merge($output, $ebayresult);
+				}
 			}
 			if ($Joomlaaktiviert == "checked")
 			{
-				$output = array_merge($output, getJoomlaOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], $_POST["bestellungbis"]));
+				$joomlaresult = getJoomlaOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], $_POST["bestellungbis"]);
+				if(count($joomlaresult) > 0)
+				{
+					$output = array_merge($output, $joomlaresult);
+				}
 			}
 								
 			// output sortieren
@@ -175,15 +187,27 @@ else
 			$output = array();
 			if ($Amazonaktiviert == "checked")
 			{
-				$output = array_merge($output, getAmazonOrders($_POST["fulfillmentchannel"], $_POST["versandstatus"], $_POST["suchdatum"], isset($_POST["erledigtesanzeigen"]), $_POST["bestellungvom"], ""));
+				$amazonresult = getAmazonOrders($_POST["fulfillmentchannel"], $_POST["versandstatus"], $_POST["suchdatum"], isset($_POST["erledigtesanzeigen"]), $_POST["bestellungvom"], "");
+				if(count($amazonresult) > 0)
+				{
+					$output = array_merge($output, $amazonresult);
+				}
 			}
 			if ($eBayaktiviert == "checked")
 			{
-				$output = array_merge($output, getEbayOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], ""));
+				$ebayresult = getEbayOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], "");
+				if(count($ebayresult) > 0)
+				{
+					$output = array_merge($output, $ebayresult);
+				}
 			}
 			if ($Joomlaaktiviert == "checked")
 			{
-				$output = array_merge($output, getJoomlaOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], ""));
+				$joomlaresult = getJoomlaOrders($_POST["fulfillmentchannel"], $_POST["bestellungvom"], "");
+				if(count($joomlaresult) > 0)
+				{
+					$output = array_merge($output, $joomlaresult);
+				}
 			}
 
 			// output sortieren
@@ -297,7 +321,7 @@ else
 												($opSet1['OrderStatus'] == "Unshipped" && $opSet1['FulfillmentChannel'] == "MFN") ||
 												($opSet1['OrderStatus'] == "Pending payment" && $opSet1['FulfillmentChannel'] == "MFN") ||
 												($opSet1['OrderStatus'] == "Paid" && $opSet1['FulfillmentChannel'] == "MFN") ||
-												($opSet1['OrderStatus'] == "Completed" && $opSet1['SalesChannel'] == $eBayAbteilungsname))
+												($opSet1['OrderStatus'] == "Completed" && $opSet1['MarketplaceId'] == $eBayAbteilungsname))
 											{
 												echo "<td>";
 												echo "<input type=\"checkbox\" name=\"importauswahl[]\" value=\"".$opSet1['AmazonOrderId']."\" "."checked=\"checked\"".">";

@@ -153,8 +153,8 @@ class eBayApiClass
 						$returnvalue[$bestellungszaehler]['SellerOrderId'] = $eBayBestellnummernprefix.$item->getElementsByTagName('OrderID')->item(0)->nodeValue;
 						$returnvalue[$bestellungszaehler]['PurchaseDate'] = $item->getElementsByTagName('CreatedDate')->item(0)->nodeValue;
 						$returnvalue[$bestellungszaehler]['LastUpdateDate'] = $item->getElementsByTagName('LastModifiedTime')->item(0)->nodeValue;
-						$returnvalue[$bestellungszaehler]['SalesChannel'] = $eBayAbteilungsname;
-						$returnvalue[$bestellungszaehler]['MarketplaceId'] = $item->getElementsByTagName('Platform')->item(0)->nodeValue.".".$item->getElementsByTagName('TransactionSiteID')->item(0)->nodeValue;
+						$returnvalue[$bestellungszaehler]['SalesChannel'] = $item->getElementsByTagName('Platform')->item(0)->nodeValue.".".$item->getElementsByTagName('TransactionSiteID')->item(0)->nodeValue;
+						$returnvalue[$bestellungszaehler]['MarketplaceId'] = $eBayAbteilungsname;
 						// $returnvalue[$bestellungszaehler]['OrderType'] = "";
 						$returnvalue[$bestellungszaehler]['OrderStatus'] = $item->getElementsByTagName('OrderStatus')->item(0)->nodeValue;
 						$returnvalue[$bestellungszaehler]['FulfillmentChannel'] = "MFN";
@@ -165,7 +165,19 @@ class eBayApiClass
 						
 						$returnvalue[$bestellungszaehler]['Amount'] = $item->getElementsByTagName('Total')->item(0)->nodeValue;
 						$returnvalue[$bestellungszaehler]['CurrencyCode'] = $item->getElementsByTagName('Total')->item(0)->getAttribute('currencyID');
-						$returnvalue[$bestellungszaehler]['PaymentMethod'] = $item->getElementsByTagName('PaymentMethod')->item(0)->nodeValue;
+						$zahlungsmethode = $item->getElementsByTagName('PaymentMethod')->item(0)->nodeValue;
+						if(strpos($zahlungsmethode, "MoneyXfer") !== false)
+						{
+							$returnvalue[$bestellungszaehler]['PaymentMethod'] = "Vorauskasse";
+						}
+						else if(strpos($zahlungsmethode, "PayPal") !== false)
+						{
+							$returnvalue[$bestellungszaehler]['PaymentMethod'] = "PayPal";
+						}
+						else
+						{
+							$returnvalue[$bestellungszaehler]['PaymentMethod'] = "Sonstiges";
+						}
 						$returnvalue[$bestellungszaehler]['NumberOfItemsShipped'] = 0;
 						$returnvalue[$bestellungszaehler]['NumberOfItemsUnshipped'] = $item->getElementsByTagName('QuantityPurchased')->item(0)->nodeValue;
 						$returnvalue[$bestellungszaehler]['BuyerName'] = $item->getElementsByTagName('BuyerUserID')->item(0)->nodeValue;
