@@ -477,9 +477,9 @@ function insert_neuen_Kunden($bestellung)
 }
 
 /**********************************************
-* einfuegen_bestellte_Artikel($artikelliste, $AmazonOrderId, $zugehoerigeAuftragsID)
+* einfuegen_bestellte_Artikel($artikelliste, $AmazonOrderId, $zugehoerigeAuftragsID, $zugehoerigeAuftragsNummer)
 ***********************************************/
-function einfuegen_bestellte_Artikel($artikelliste, $AmazonOrderId, $zugehoerigeAuftragsID)
+function einfuegen_bestellte_Artikel($artikelliste, $AmazonOrderId, $zugehoerigeAuftragsID, $zugehoerigeAuftragsNummer)
 {
 	require "conf.php";
 
@@ -495,16 +495,23 @@ function einfuegen_bestellte_Artikel($artikelliste, $AmazonOrderId, $zugehoerige
 		{
 			$artID = $rs2[0]["id"];
 			$artNr = $rs2[0]["partnumber"];
+			$ordnumber = $zugehoerigeAuftragsNummer;
+			$lastcost = $rs2[0]["lastcost"];
+			$longdescription = $rs2[0]["notes"];
 			$einzelpreis = round($einzelartikel["ItemPrice"] / $einzelartikel["QuantityOrdered"], 2, PHP_ROUND_HALF_UP) - round($einzelartikel["PromotionDiscount"] / $einzelartikel["QuantityOrdered"], 2, PHP_ROUND_HALF_UP);
 			$text = $rs2[0]["description"];
 			
-			$sql = "insert into orderitems (trans_id, parts_id, description, qty, longdescription, sellprice, unit, ship, discount) values (";
-			$sql .= $zugehoerigeAuftragsID.",'"
+			$sql = "insert into orderitems (trans_id, ordnumber, parts_id, description, longdescription, qty, cusordnumber, sellprice, lastcost, unit, ship, discount) values (";
+			$sql .= $zugehoerigeAuftragsID.","
+					.$ordnumber.",'"
 					.$artID."','"
-					.$text."',"
+					.$text."','"
+					.$longdescription."',"
 					.$einzelartikel["QuantityOrdered"].",'"
 					.$AmazonOrderId."',"
-					.$einzelpreis.",'Stck',0,0)";
+					.$einzelpreis.","
+					.$lastcost.","
+					."'Stck',0,0)";
 					
 			echo " - Artikel:[ Artikel-ID:$artID Artikel-Nummer:<b>$artNr</b> ".$einzelartikel["Title"]." ]<br>";
 			$rc = query("erp", $sql, "einfuegen_bestellte_Artikel");
@@ -673,7 +680,7 @@ function erstelle_Auftrag($bestellung, $kundennummer, $versandadressennummer, $E
 	}
 	echo "Auftrag:[ Buchungsnummer:".$rs2[0]["id"]." AuftragsNummer:<b>".$auftrag."</b> ]<br>";
 	
-	if (!einfuegen_bestellte_Artikel(array_values($bestellung['AmazonOrderIdProducts']), $bestellung["AmazonOrderId"], $rs2[0]["id"]))
+	if (!einfuegen_bestellte_Artikel(array_values($bestellung['AmazonOrderIdProducts']), $bestellung["AmazonOrderId"], $rs2[0]["id"], $auftrag))
 	{
 		echo "Auftrag ".$bestellung["AmazonOrderId"]." konnte nicht angelegt werden.<br>";
 		$rc = query("erp", "ROLLBACK WORK", "erstelle_Auftrag");
