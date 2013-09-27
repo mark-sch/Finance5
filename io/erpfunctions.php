@@ -306,7 +306,8 @@ function checke_alte_Kundendaten($bestellung)
 	// Wenn Kunde gefunden, ab hier die Kundendaten auf den neusten Stand bringen
 	if ($rs[0]["name"] <> $bestellung["Name"])
 	{
-		$set.="name='".$bestellung["Name"]."',";
+		$name = pg_escape_string($bestellung["Name"]);
+		$set.="name='".$name."',";
 	}
 	if ($rs[0]["greeting"] <> $bestellung["Title"])
 	{
@@ -314,20 +315,23 @@ function checke_alte_Kundendaten($bestellung)
 	}
 	if ($bestellung["AddressLine2"] != "")
 	{
+		$department_1 = pg_escape_string($bestellung["AddressLine1"]);
+		$street = pg_escape_string($bestellung["AddressLine2"]);
 		if ($rs[0]["department_1"] <> $bestellung["AddressLine1"])
 		{
-			$set.="department_1='".$bestellung["AddressLine1"]."',";
+			$set.="department_1='".$department_1."',";
 		}
 		if ($rs[0]["street"] <> $bestellung["AddressLine2"])
 		{
-			$set.="street='".$bestellung["AddressLine2"]."',";
+			$set.="street='".$street."',";
 		}
 	}
 	else 
 	{
+		$street = pg_escape_string($bestellung["AddressLine1"]);
 		if ($rs[0]["street"] <> $bestellung["AddressLine1"])
 		{
-			$set.="street='".$bestellung["AddressLine1"]."',";
+			$set.="street='".$street."',";
 		}
 	}
 	if ($rs[0]["zipcode"] <> $bestellung["PostalCode"])
@@ -336,7 +340,8 @@ function checke_alte_Kundendaten($bestellung)
 	}
 	if ($rs[0]["city"] <> $bestellung["City"])
 	{
-		$set.="city='".$bestellung["City"]."',";
+		$city = pg_escape_string($bestellung["City"]);
+		$set.="city='".$city."',";
 	}
 	if (array_key_exists($bestellung["CountryCode"], $GLOBALS["LAND"]))
 	{
@@ -424,22 +429,27 @@ function insert_neuen_Kunden($bestellung)
 	{
 		return false;
 	}
-	$set .= "set name='".$bestellung["Name"]."',";
+	$name = pg_escape_string($bestellung["Name"]);
+	$set .= "set name='".$name."',";
 	if ($bestellung["Title"] != "")
 	{
 		$set .= "greeting='".$bestellung["Title"]."',";
 	}
 	if ($bestellung["AddressLine2"] != "")
 	{
-		$set .= "department_1='".$bestellung["AddressLine1"]."',";
-		$set .= "street='".$bestellung["AddressLine2"]."',";
+		$department_1 = pg_escape_string($bestellung["AddressLine1"]);
+		$street = pg_escape_string($bestellung["AddressLine2"]);
+		$set .= "department_1='".$department_1."',";
+		$set .= "street='".$street."',";
 	}
 	else 
 	{
-		$set .= "street='".$bestellung["AddressLine1"]."',";
+		$street = pg_escape_string($bestellung["AddressLine1"]);
+		$set .= "street='".$street."',";
 	}
 	$set .= "zipcode='".$bestellung["PostalCode"]."',";
-	$set .= "city='".$bestellung["City"]."',";
+	$city = pg_escape_string($bestellung["City"]);
+	$set .= "city='".$city."',";
 	if (array_key_exists($bestellung["CountryCode"], $GLOBALS["LAND"]))
 	{
 		$set .= "country='".utf8_encode($GLOBALS["LAND"][$bestellung["CountryCode"]])."',";
