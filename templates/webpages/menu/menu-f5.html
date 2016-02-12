@@ -13,6 +13,34 @@ function clockon() {
   var timer=setTimeout("clockon()", 1000);
 }
 $(clockon);
+
+
+function yearDD() {
+  var time = new Date();
+  var ddHtml = "";
+  var year = time.getYear();
+  if (year < 1900) {
+   year = year + 1900;
+  }
+  var date = year - 10; /*change the '101' to the number of years in the past you want to show */
+  var future = year + 0; /*change the '100' to the number of years in the future you want to show */ 
+  ddHtml += "<SELECT><OPTION value=\"all\">Anzeige: Alle";
+  do {
+   ddHtml += "<OPTION value=\"" +year+"\">Anzeige: " +year+ "";
+   year--;
+  }
+  while (year >= date)
+  
+  ddHtml +="</SELECT>";
+  document.getElementById('yearDD').innerHTML = ddHtml;
+ 
+  if($.cookie('yearDD') != null) {
+
+    // set the option to selected that corresponds to what the cookie is set to
+    $('#yearDD option[value="' + $.cookie('yearDD') + '"]').attr('selected', 'selected');
+
+  }
+}
 //-->
 </script>
 
@@ -28,6 +56,7 @@ $(clockon);
     &nbsp;&nbsp;
     [[% 'User' | $T8 %]: [% MYCONFIG.login | html %] -
     <a href="controller.pl?action=LoginScreen/logout" target="_top">[% 'logout' | $T8 %]</a>]&nbsp;&nbsp;
+    [<select id="yearDD"><option value="all">Vorauswahl: alle</select>]&nbsp;&nbsp;
     [% date %] <span id='clock_id' style='position:relative'></span>&nbsp;
  </span>
  <span class="frame-header-right" id="ajax-spinner">
