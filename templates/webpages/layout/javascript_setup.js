@@ -60,9 +60,9 @@ function postURL(url, multipart) {
   form.submit();
 }
 
-function getYearDDFilterStr() {
+function getYearDDFilterStr(strTransPrefix) {
   if($.cookie('yearDD') != null && $.cookie('yearDD') != "all") {
-    return "&datefrom=01.01."+$.cookie('yearDD')+"&dateto=31.12."+$.cookie('yearDD')+"&transdatefrom=01.01."+$.cookie('yearDD')+"&transdateto=31.12."+$.cookie('yearDD');
+    return "&"+strTransPrefix+"datefrom=01.01."+$.cookie('yearDD')+"&"+strTransPrefix+"dateto=31.12."+$.cookie('yearDD');
   }
   else {
     return "";
@@ -70,11 +70,11 @@ function getYearDDFilterStr() {
 }
 
 function gotoBuchungen() {
-  document.location = "gl.pl?action=generate_report&datesort=gldate&category=X&l_gldate=Y&l_transdate=Y&l_reference=Y&l_description=Y&l_debit=Y&l_credit=Y&sort=transdate&sortdir=0"+getYearDDFilterStr();
+  document.location = "gl.pl?action=generate_report&datesort=transdate&sort=transdate&category=X&l_gldate=Y&l_transdate=Y&l_reference=Y&l_description=Y&l_debit=Y&l_credit=Y&sort=transdate&sortdir=0"+getYearDDFilterStr('');
 }
 
 function gotoRechnungen() {
-  document.location = "ar.pl?action=Weiter&nextsub=ar_transactions&open=1&closed=1&l_amount=Y&l_invnumber=Y&l_name=Y&l_netamount=Y&l_paid=Y&l_transdate=Y&sort=transdate"+getYearDDFilterStr();
+  document.location = "ar.pl?action=Weiter&nextsub=ar_transactions&open=1&closed=1&l_amount=Y&l_invnumber=Y&l_name=Y&l_netamount=Y&l_paid=Y&l_transdate=Y&sort=transdate"+getYearDDFilterStr('trans');
 }
 
 // init year preselection dropdown

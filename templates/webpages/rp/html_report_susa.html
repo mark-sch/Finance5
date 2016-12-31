@@ -37,6 +37,7 @@
  [% RAW_TOP_INFO_TEXT %]
 
  [% IF DATA_PRESENT %]
+ [%- SET csv = "" %]
  <p>
   <table width="100%">
    <tr>
@@ -76,12 +77,14 @@
         [%- IF cell_row.data != '' %]
          [%- IF cell_row.link %]<a href="[% cell_row.link %]">[%- END %]
          [%- cell_row.data %]
+         [%- SET csv = "$csv$cell_row.data;" %]
          [%- IF cell_row.link %]</a>[%- END %]
         [%- END %]
        [%- UNLESS iterator.last %]<br>[%- END %]
        [%- END %]
       </td>
       [%- END %]
+      [%- SET csv = "$csv\r\n" %]
      </tr>
     [% END %]
    [% END %]
@@ -114,7 +117,20 @@
     Listenexport<br>
     [% IF ALLOW_PDF_EXPORT %]<button type="button" class="submit" onclick="submit_report_generator_form('report_generator_export_as_pdf')">Als PDF exportieren</button>[% END %]
     [% IF ALLOW_CSV_EXPORT %]<button type="button" class="submit" onclick="submit_report_generator_form('report_generator_export_as_csv')">Als CSV exportieren</button>[% END %]
-   </p>
   </form>
+  </p>
+  <br/>
+  <p>
+  Finance5 Reporting Services
+  <form action="http://localhost:3000/" name="f5export" method="post" target="_new">
+       <input type="hidden" name="txtCSV" value="[% csv %]">
+       <input type="submit" class="submit" value="Bilanz und GuV">
+  </form>
+  <br/>
+  <form action="http://localhost:3000/" name="f5export" method="post" target="_new">
+       <input type="hidden" name="txtCSV" value="[% csv %]">
+       <input type="submit" class="submit" value="Er&ouml;ffnungs- und Schu&szlig;bilanzbuchungen">
+  </form>
+  </p>
  [% END %]
 
