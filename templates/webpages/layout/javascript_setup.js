@@ -69,12 +69,26 @@ function getYearDDFilterStr(strTransPrefix) {
   } 
 }
 
+function getShortYearDDFilterStr(strTransPrefix) {
+  if($.cookie('yearDD') != null && $.cookie('yearDD') != "all") {
+    return "&year="+$.cookie('yearDD');
+  }
+  else {
+    return "&year=";
+  }
+}
+
+
 function gotoBuchungen() {
   document.location = "gl.pl?action=generate_report&datesort=transdate&sort=transdate&category=X&l_gldate=Y&l_transdate=Y&l_reference=Y&l_description=Y&l_debit=Y&l_credit=Y&sort=transdate&sortdir=0"+getYearDDFilterStr('');
 }
 
 function gotoRechnungen() {
   document.location = "ar.pl?action=Weiter&nextsub=ar_transactions&open=1&closed=1&l_amount=Y&l_invnumber=Y&l_name=Y&l_netamount=Y&l_paid=Y&l_transdate=Y&sort=transdate"+getYearDDFilterStr('trans');
+}
+
+function gotoBilanzen() {
+  document.location = "rp.pl?title=Summen-+und+Saldenliste&project_id=&nextsub=generate_trial_balance&reporttype=custom&duetyp=13&fromdate=&todate=&method=accrual&decimalplaces=2&action=Weiter"+getShortYearDDFilterStr('');
 }
 
 // init year preselection dropdown

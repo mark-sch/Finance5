@@ -158,6 +158,7 @@ sub start_content {
   "        <li><a href='wh.pl?action=generate_report&l_warehousedescription=Y&l_bindescription=Y&l_partnumber=Y&l_partdescription=Y&l_chargenumber=Y&l_qty=Y&l_stock_value=Y&qty_op=dontcare&qty_unit=Stck&l_warehousedescription=Y&l_bindescription=Y&sort=partnumber&order=0'>Lager</a></li>\n" .
   "        <li><a href='javascript:gotoRechnungen();'>Rechnungen</a></li>\n" .
   "        <li><a href='javascript:gotoBuchungen();'>Buchungen</a></li>\n" .
+  "        <li><a href='javascript:gotoBilanzen();'>Bilanzen</a></li>\n" .
   "        <li><a href='fu.pl?nextsub=report&created_for=&subject=&body=&reference=&follow_up_date_from=&follow_up_date_to=&itime_from=&itime_to=&due_only=1&all_users=1&not_done=1&action=Weiter'>Erinnerungen</a></li>\n" .
   "        </ul>\n" .
   "  </div>\n" .
