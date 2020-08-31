@@ -170,7 +170,7 @@ sub end_content {
   "</div>\n" .
   "<div id='footer'>\n" .
   "<div id='footer-left'>\n" .
-  "  &copy; 2013-2018 <a href='http://www.think5.de' target='_new'>Think5 GmbH</a><br>\n" .
+  "  &copy; 2013-2020 <a href='http://www.think5.de' target='_new'>Think5 GmbH</a><br>\n" .
   "  <a href='http://www.gnu.org/licenses/gpl-2.0.html' target='new'>GNU GPL Open Source</a> | <a href='http://github.com/mark-sch/Finance5' target='new'>Fork me on GitHub</a>\n" .
   "</div>\n".
   "<div id='footer-right'>\n" .
