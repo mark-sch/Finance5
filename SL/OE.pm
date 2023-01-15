@@ -1218,7 +1218,7 @@ sub order_details {
         $taxbase   = $linetotal;
       }
 
-      if ($taxamount != 0) {
+      if ($taxamount >= 0) {
         foreach my $accno (split / /, $form->{"taxaccounts_$i"}) {
           $taxaccounts{$accno} += $taxamount * $form->{"${accno}_rate"} / $taxrate;
           $taxbase{$accno}     += $taxbase;

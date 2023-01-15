@@ -157,6 +157,7 @@ sub start_content {
   "        <li><a href='ic.pl?searchitems=part&title=Waren&revers=0&lastsort=&nextsub=generate_report&sort=description&ndxs_counter=0&partnumber=&ean=&description=&partsgroup_id=&serialnumber=&make=&model=&drawing=&microfiche=&itemstatus=active&transdatefrom=&transdateto=&l_partnumber=Y&l_description=Y&l_unit=Y&l_sellprice=Y&l_lastcost=Y&l_linetotal=Y&action=Weiter'>Waren</a></li>\n" .
   "        <li><a href='wh.pl?action=generate_report&l_warehousedescription=Y&l_bindescription=Y&l_partnumber=Y&l_partdescription=Y&l_chargenumber=Y&l_qty=Y&l_stock_value=Y&qty_op=dontcare&qty_unit=Stck&l_warehousedescription=Y&l_bindescription=Y&sort=partnumber&order=0'>Lager</a></li>\n" .
   "        <li><a href='javascript:gotoAngebote();'>Angebote</a></li>\n" .
+  "        <li><a href='javascript:gotoAuftraege();'>Auftr&auml;ge</a></li>\n" .
   "        <li><a href='javascript:gotoRechnungen();'>Rechnungen</a></li>\n" .
   "        <li><a href='javascript:gotoBuchungen();'>Buchungen</a></li>\n" .
   "        <li><a href='javascript:gotoBilanzen();'>Bilanzen</a></li>\n" .

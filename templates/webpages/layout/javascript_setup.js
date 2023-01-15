@@ -87,6 +87,10 @@ function gotoAngebote() {
   document.location = "oe.pl?open=1&closed=1&l_quonumber=Y&l_transdate=Y&l_reqdate=Y&l_name=Y&l_employee=Y&l_netamount=Y&l_tax=Y&l_amount=Y&l_vcnumber=Y&nextsub=orders&vc=customer&type=sales_quotation&action=Weiter"+getYearDDFilterStr('trans');
 }
 
+function gotoAuftraege() {
+  document.location = "oe.pl?action=orders&l_transdate=Y&l_reqdate=Y&l_ordnumber=Y&l_name=Y&l_amount=Y&l_employee=Y&l_open=Y&l_delivered=Y&l_closed=Y&open=1&closed=1&delivered=1&notdelivered=1&type=sales_order&vc=customer&sort=ordnumber&sortdir=0"+getYearDDFilterStr('trans');
+}
+
 function gotoRechnungen() {
   document.location = "ar.pl?action=Weiter&nextsub=ar_transactions&open=1&closed=1&l_amount=Y&l_invnumber=Y&l_name=Y&l_netamount=Y&l_paid=Y&l_transdate=Y&sort=transdate"+getYearDDFilterStr('trans');
 }
